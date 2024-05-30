@@ -5,6 +5,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import MeditationProgram from '../screens/MeditationProgram';
 import HomeScreen from '../screens/HomeScreen';
 import SplashScreen from '../screens/SplashScreen';
+import ProgramList from '../screens/ProgramList';
+import MeditationPlayer from '../screens/MeditationPlayer';
 import AuthScreen from '../screens/AuthScreen';
 import React from 'react';
 
@@ -110,6 +112,8 @@ export default function RootNavigator() {
                     }}
                 />
                 <Stack.Screen name='meditationProgram' component={MeditationProgram} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+                <Stack.Screen name='ProgramList' component={ProgramList} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+                <Stack.Screen name='MeditationPlayer' component={MeditationPlayer} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
 
             </Stack.Navigator>
         </NavigationContainer>

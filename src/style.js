@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     meditationHeader: {
         width: 250,
         marginHorizontal: 20,
-        paddingTop:85,
+        paddingTop: 85,
         paddingBottom: 50,
     },
     meditationHeaderText: {
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
     },
     meditationCard: {
         width: '100%',
-        overflow:'hidden',
-        borderRadius:20,
+        overflow: 'hidden',
+        borderRadius: 20,
         marginVertical: 10
     },
     meditationCardImage: {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: '#fff',
         paddingVertical: 10,
-        marginBottom: 25
+        marginBottom: 20
     },
     programText: {
         fontFamily: 'Montserrat-Regular',
@@ -164,6 +164,59 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
+    programListHeader: {
+        marginHorizontal: 20,
+        paddingTop: 85,
+        paddingBottom: 50,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    programList: {
+        marginHorizontal: 20,
+        paddingTop: 10,
+    },
+    programSubHeader: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 20,
+        paddingBottom: 10
+    },
+    programMainList: {
+        paddingVertical: 10,
+    },
+    programListTextView: {
+        backgroundColor: "rgba(0,0,0,0.12)",
+        marginVertical: 5,
+        borderRadius: 15,
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+        marginVertical: 8,
+
+    },
+    programListText: {
+        fontFamily: 'Montserrat-Regular',
+        paddingVertical: 15,
+    },
+    playView: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        left: 50,
+        right: 50,
+        top: 325,
+
+    },
+    playViewCon: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    }
 
 })
 

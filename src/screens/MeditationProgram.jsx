@@ -16,7 +16,7 @@ export default function MeditationProgram({ route, navigation }) {
         style={styles.backgroundImage}
       >
         <LinearGradient
-          colors={[ 'transparent', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,1)']}
+          colors={['transparent', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,1)']}
           style={{ height: '70%', position: 'absolute', bottom: 0, zIndex: 1, left: 0, right: 0 }}
         ></LinearGradient>
         <View style={styles.programTextContainer}>
@@ -24,8 +24,8 @@ export default function MeditationProgram({ route, navigation }) {
           <Text style={styles.programText}>{item.desc}</Text>
         </View>
         <View style={styles.programBottomContainer}>
-          <Icon name='arrow-forward' size={24} color='#fff' />
-          <Text style={styles.programText}>Change Program</Text>
+          <Icon name='arrow-forward' size={24} color='#fff' onPress={() => navigation.navigate('ProgramList', { item })} />
+          <Text style={styles.programText} onPress={() => navigation.navigate('Meditation ')}>Change Program</Text>
         </View>
       </ImageBackground>
     </View>

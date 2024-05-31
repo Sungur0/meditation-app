@@ -207,6 +207,16 @@ const styles = StyleSheet.create({
         left: 50,
         right: 50,
         top: 325,
+        borderRadius: 75,
+        zIndex: 1,
+    },
+    playOverlay: {
+        position: 'absolute',
+        backgroundColor: 'rgba(255,255,255, 0.1);',
+        borderRadius: 150,
+        height: 190,
+        width: 190,
+        zIndex: 0
 
     },
     playViewCon: {
@@ -215,7 +225,75 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150,
         borderRadius: 75,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(255,255,255, 0.5);',
+        zIndex: 99,
+
+    },
+    progressBar: {
+        height: 10,
+        backgroundColor: '#ccc',
+        marginTop: 20,
+        marginHorizontal: 20,
+    },
+    progressTime: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: 180,
+        bottom: 0,
+
+    },
+    progressTimeText: {
+        color: '#fff',
+        fontSize: 18,
+        fontFamily: 'Montserrat-Regular',
+        zIndex: 5,
+
+    },
+    meditationProgramName: {
+        position: 'absolute',
+        bottom: 225,
+        right: 0,
+        left: 0,
+        justifyContent: 'center',
+        marginHorizontal: 20
+    },
+    meditationProgramNameText: {
+        fontFamily: 'Montserrat-bold',
+        color: '#fff',
+        fontSize: 24,
+    },
+    timerSelectView: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 55
+    },
+    optionBorder: {
+        borderRightWidth: 1,
+        borderLeftWidth: 1,
+        borderColor: '#fff',
+    },
+    option:{
+        paddingHorizontal: 5
+
+    },
+    timeText: {
+        fontFamily: 'Montserrat-regular',
+        paddingHorizontal: 5,
+        color: '#fff',
+        fontSize: 16,
+
+    },
+    programTimerView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        bottom: 100,
+        marginHorizontal: 20
     }
 
 })

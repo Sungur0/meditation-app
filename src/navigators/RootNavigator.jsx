@@ -8,6 +8,8 @@ import SplashScreen from '../screens/SplashScreen';
 import ProgramList from '../screens/ProgramList';
 import MeditationPlayer from '../screens/MeditationPlayer';
 import AuthScreen from '../screens/AuthScreen';
+import MeditationArticles from '../screens/MeditationArticles';
+import ArticleDetail from '../screens/ArticleDetail';
 import React from 'react';
 
 const Stack = createStackNavigator();
@@ -25,7 +27,7 @@ const MeditationStackScreens = () => (
 );
 const MeditationArticleStackScreens = () => (
     <Stack.Navigator >
-        <Stack.Screen name='Meditation Article' component={HomeScreen} options={{ headerShown: true, headerLeft: false }} />
+        <Stack.Screen name='Meditation Article' component={MeditationArticles} options={{ headerShown: false, headerLeft: false }} />
     </Stack.Navigator>
 );
 const UserStackScreens = () => (
@@ -113,7 +115,8 @@ export default function RootNavigator() {
                 />
                 <Stack.Screen name='meditationProgram' component={MeditationProgram} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
                 <Stack.Screen name='ProgramList' component={ProgramList} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
-                <Stack.Screen name='MeditationPlayer' component={MeditationPlayer} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+                <Stack.Screen name='MeditationPlayer' component={MeditationPlayer}  options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+                <Stack.Screen name='ArticleDetail' component={ArticleDetail}  options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
 
             </Stack.Navigator>
         </NavigationContainer>

@@ -216,8 +216,7 @@ const styles = StyleSheet.create({
         borderRadius: 150,
         height: 190,
         width: 190,
-        zIndex: 0
-
+        zIndex: 0,
     },
     playViewCon: {
         justifyContent: 'center',
@@ -276,7 +275,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderColor: '#fff',
     },
-    option:{
+    option: {
         paddingHorizontal: 5
 
     },
@@ -294,7 +293,96 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 100,
         marginHorizontal: 20
-    }
+    },
+    backgroundMusicText: {
+        fontFamily: 'Montserrat-regular',
+        paddingHorizontal: 5,
+        color: '#fff',
+        fontSize: 16,
+        marginLeft: 70
+    },
+    card: {
+        width: 225,
+        height: 300,
+        margin: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    cardText: {
+        position: 'absolute',
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 20,
+        color: '#fff',
+        bottom: 15,
+        paddingVertical: 10
+    },
+    categoryImg: {
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
+        borderRadius: 20,
+    },
+    meditationArticlesHeader: {
+        width: 250,
+        paddingTop: 85,
+        paddingBottom: 50,
+        marginHorizontal: 20,
+    },
+    meditationSubArticlesHeader: {
+        width: 250,
+        paddingTop: 35,
+        marginHorizontal: 20,
+    },
+    meditationSubHeaderText: {
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 17,
+        paddingBottom: 30
+    },
+    articleContainer: {
+        width: '48%',
+        backgroundColor: '#f0f0f0',
+        marginBottom:50,
+        height: 225,
+    },
+    verticalArticleContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        paddingBottom: 50
+    },
+    articleTitle: {
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 13,
+        color: '#000',
+        paddingVertical: 5,
+        marginHorizontal: 10,
+    },
+    articleDescCardContainer: {
+        backgroundColor: '#fff',
+        marginHorizontal: 20,
+        borderRadius: 20
+    },
+    articleDescHeader: {
+        marginBottom: 25
+    },
+    articleDescCardHeader: {
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 1,
+        shadowRadius:6,
+        fontFamily: 'Montserrat-Bold',
+        color: '#fff',
+        fontSize: 21,
+        marginHorizontal: 20,
+    },
+    articleDescCardText: {
+        padding: 15,
+        fontFamily: 'Montserrat-Medium',
+        lineHeight: 25
+
+    },
 
 })
 

@@ -10,6 +10,8 @@ import MeditationPlayer from '../screens/MeditationPlayer';
 import AuthScreen from '../screens/AuthScreen';
 import MeditationArticles from '../screens/MeditationArticles';
 import ArticleDetail from '../screens/ArticleDetail';
+import AccountScreen from '../screens/AccountScreen';
+import FavoritesScreen from '../screens/FavoritesScreen'
 import React from 'react';
 
 const Stack = createStackNavigator();
@@ -17,7 +19,7 @@ const Tab = createBottomTabNavigator();
 
 const DiscoverStackScreens = () => (
     <Stack.Navigator >
-        <Stack.Screen name='Favorite' component={HomeScreen} options={{ headerShown: true, headerLeft: false }} />
+        <Stack.Screen name='Favorite' component={FavoritesScreen} options={{ headerShown: false, headerLeft: false }} />
     </Stack.Navigator>
 );
 const MeditationStackScreens = () => (
@@ -32,7 +34,7 @@ const MeditationArticleStackScreens = () => (
 );
 const UserStackScreens = () => (
     <Stack.Navigator >
-        <Stack.Screen name='User ' component={HomeScreen} options={{ headerShown: true, headerLeft: false }} />
+        <Stack.Screen name='Account' component={AccountScreen} options={{ headerShown: false, headerLeft: false }} />
     </Stack.Navigator>
 );
 
@@ -115,8 +117,8 @@ export default function RootNavigator() {
                 />
                 <Stack.Screen name='meditationProgram' component={MeditationProgram} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
                 <Stack.Screen name='ProgramList' component={ProgramList} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
-                <Stack.Screen name='MeditationPlayer' component={MeditationPlayer}  options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
-                <Stack.Screen name='ArticleDetail' component={ArticleDetail}  options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+                <Stack.Screen name='MeditationPlayer' component={MeditationPlayer} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+                <Stack.Screen name='ArticleDetail' component={ArticleDetail} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
 
             </Stack.Navigator>
         </NavigationContainer>

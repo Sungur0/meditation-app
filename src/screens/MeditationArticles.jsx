@@ -8,7 +8,7 @@ export default function MeditationArticles({ navigation }) {
 
    
     return (
-        <ScrollView >
+        <ScrollView style={{backgroundColor:'#fffss'}}>
             <View style={styles.meditationArticlesHeader}>
                 <Text style={styles.meditationHeaderText}>Meditaton Articles</Text>
             </View>

@@ -30,6 +30,8 @@ target 'myapp' do
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] == 'true',
   )
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   post_install do |installer|
     react_native_post_install(
       installer,

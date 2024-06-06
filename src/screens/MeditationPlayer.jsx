@@ -7,20 +7,42 @@ import { Audio } from 'expo-av';
 import TimerPicker from '../components/TimePicker';
 import CircularProgress from '../components/CircularProgress';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useDispatch, useSelector } from 'react-redux';
+import { addFavorite, removeFavorite } from '../redux/UserSlice';
 
 export default function MeditationPlayer({ route, navigation }) {
     const { item } = route.params;
-    console.log(item)
     const [sound, setSound] = useState();
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
     const [selectedTime, setSelectedTime] = useState(0);
     const intervalRef = useRef(null);
-
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
     const handleBackPress = () => {
         stopMeditation();
         navigation.goBack();
+    };
+
+    const isFavorite = user.favorites?.includes(item.id);
+    const [isFavorited, setIsFavorited] = useState(isFavorite);
+
+
+    useEffect(() => {
+        const isFavorite = user.userInfo.favorites.programs.includes(item.id);
+        console.log(isFavorite)
+        setIsFavorited(isFavorite);
+    }, []);
+
+    const handleToggleFavorite = () => {
+        if (isFavorited) {
+            dispatch(removeFavorite({ id: item.id, type: 'program' }));
+            setIsFavorited(false);
+        } else {
+            dispatch(addFavorite({ id: item.id, type: 'program' }));
+            setIsFavorited(true);
+        }
     };
 
     useEffect(() => {
@@ -89,7 +111,7 @@ export default function MeditationPlayer({ route, navigation }) {
                 await sound.unloadAsync();
                 setSound(null);
                 setIsPlaying(false);
-                setProgress(0); // İlerlemenizi sıfırlayın
+                setProgress(0); 
                 if (intervalRef.current) {
                     clearInterval(intervalRef.current);
                     intervalRef.current = null;
@@ -105,7 +127,6 @@ export default function MeditationPlayer({ route, navigation }) {
         setSelectedTime(time);
         setDuration(time * 60000);
     };
-    console.log(progress)
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground
@@ -116,7 +137,9 @@ export default function MeditationPlayer({ route, navigation }) {
                     <TouchableOpacity onPress={handleBackPress} activeOpacity={0.9}>
                         <Icon name='arrow-back-outline' size={24} color="#fff" />
                     </TouchableOpacity>
-                    <Icon name='heart-outline' size={24} color="#fff" />
+                    <TouchableOpacity onPress={handleToggleFavorite} activeOpacity={0.9}>
+                        <Icon name={isFavorited ? 'heart-sharp' : 'heart-outline'} size={24} color="#fff" />
+                    </TouchableOpacity >
                 </View>
 
                 <View style={styles.playView}>
@@ -126,13 +149,13 @@ export default function MeditationPlayer({ route, navigation }) {
                     </TouchableOpacity>
                     {isPlaying && (
                         <View style={{ position: 'absolute', top: -26, left: 0, right: 0, justifyContent: 'center', alignItems: 'center', zIndex: 0 }}>
-                            <CircularProgress radius={100} strokeWidth={5} progress={progress * 100}  />
+                            <CircularProgress radius={100} strokeWidth={5} progress={progress * 100} />
                         </View>
                     )}
                 </View>
                 <View style={styles.progressTime}>
                     <Text style={styles.progressTimeText}>
-                    {new Date(progress * duration).toISOString().substr(14, 5)} / {new Date(duration).toISOString().substr(14, 5)}
+                        {new Date(progress * duration).toISOString().substr(14, 5)} / {new Date(duration).toISOString().substr(14, 5)}
                     </Text>
                 </View>
                 <LinearGradient

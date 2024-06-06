@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
         paddingBottom: 50,
         justifyContent: 'space-between',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     programList: {
         marginHorizontal: 20,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     articleContainer: {
         width: '48%',
         backgroundColor: '#f0f0f0',
-        marginBottom:50,
+        marginBottom: 50,
         height: 225,
     },
     verticalArticleContainer: {
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 1,
-        shadowRadius:6,
+        shadowRadius: 6,
         fontFamily: 'Montserrat-Bold',
         color: '#fff',
         fontSize: 21,
@@ -381,8 +381,90 @@ const styles = StyleSheet.create({
         padding: 15,
         fontFamily: 'Montserrat-Medium',
         lineHeight: 25
+    },
+    accountText: {
+        textTransform: 'uppercase',
+        fontFamily: 'Montserrat-ExtraBold',
+        fontSize: 20,
+        paddingVertical: 10,
+        color: '#F5840C'
+    },
+    accountStatusHeader: {
+        marginHorizontal: 20
+    },
+    accountStatusText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 20,
+    },
+    accountStatusCard: {
+        backgroundColor: '#e6e6e6',
+        marginHorizontal: 20,
+        marginVertical: 15,
+        borderRadius: 15,
+        height: 130
+    },
+    accountStatusCardHeader: {
+        flexDirection: 'row',
+        paddingHorizontal: 10,
+        alignItems: 'center',
+        marginTop: 20
 
     },
+    accountStatusCardHeaderText: {
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 15
+    },
+    accountStatusCardHeaderIcon: {
+        paddingHorizontal: 5,
+        paddingRight: 15
+    },
+    accountStatusCardText: {
+        fontFamily: 'Montserrat-Regular',
+        paddingHorizontal: 55,
+        paddingTop: 15,
+        paddingBottom: 20,
+        fontSize: 17,
+    },
+    accountStatusCardInfo: {
+        fontFamily: 'Montserrat-ExtraBold',
+        fontSize: 30,
+    },
+    articleDetailHeader: {
+        marginHorizontal: 20,
+        paddingTop: 85,
+        paddingBottom: 50,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 1,
+        shadowRadius: 1,
+    },
+    favoritesViewContainer: {
+        marginHorizontal: 20,
+        marginBottom: 20
+    },
+    favoritesHeaderText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 21,
+        marginBottom: 15
+    },
+    favoritesCardContainer:{
+        backgroundColor:'#d9d9d9',
+        marginVertical:10,
+        paddingVertical:15,
+        paddingHorizontal:15,
+        borderRadius:15,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center'
+    },
+    favoritesCardText:{
+        fontSize:15,
+        color:'#000',
+        fontFamily: 'Montserrat-Medium',
+    }
 
 })
 

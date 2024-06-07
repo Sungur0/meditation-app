@@ -4,22 +4,25 @@ import { useSelector, useDispatch } from 'react-redux';
 import styles from '../style';
 import { useData } from '../context/DataContext';
 import DeviceInfo from 'react-native-device-info';
-
+import FloatingPlayer from '../components/FloatingPlayer';
 export default function HomeScreen({ navigation }) {
   const uniqueId = DeviceInfo.getUniqueIdSync();
   console.log(uniqueId)
-  
-  const { data } = useData(); 
 
+  const { data } = useData();
+  const { item } = useSelector(state => state.music);
+
+  console.log(item)
   const goToMeditationProgram = (item) => {
     navigation.navigate('meditationProgram', { item });
   };
   return (
 
-    <ScrollView style={{ flex: 1 ,backgroundColor:'#fff'}} showsVerticalScrollIndicator={false}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} showsVerticalScrollIndicator={false}>
       <View style={styles.meditationHeader}>
         <Text style={styles.meditationHeaderText}>Choose your meditation program</Text>
       </View>
+      {item && <FloatingPlayer navigation={navigation} />}
 
       <View style={styles.meditationCardContainer}>
         {data.categories.map((item, i) => (

@@ -1,44 +1,82 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useRef } from 'react';
+import { View, TouchableOpacity, Text, Animated, Easing } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { setPlaying } from '../redux/musicSlice';
-
-const FloatingPlayer = ({ navigation }) => {
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { setIsPlaying, setProgress } from '../redux/audioSlice';
+import { useAudio } from '../context/AudioContext';
+import styles from '../style';
+const FloatingPlayer = () => {
     const dispatch = useDispatch();
-    const { item, isPlaying, sound } = useSelector(state => state.music);
+    const { sound } = useAudio();
+    const navigation = useNavigation();
+    const { isPlaying, progress, duration, currentItem } = useSelector((state) => state.audio);
+    const progressAnim = useRef(new Animated.Value(0)).current;
 
     const togglePlayPause = async () => {
-        if (isPlaying) {
-            await sound.pauseAsync();
-        } else {
-            await sound.playAsync();
+        if (sound) {
+            if (isPlaying) {
+                await sound.pauseAsync();
+            } else {
+                await sound.playAsync();
+            }
+            dispatch(setIsPlaying(!isPlaying));
         }
-        dispatch(setPlaying(!isPlaying));
     };
 
+    useEffect(() => {
+        if (sound) {
+            const interval = setInterval(async () => {
+                const status = await sound.getStatusAsync();
+                if (status.isLoaded) {
+                    dispatch(setProgress(status.positionMillis / duration));
+                }
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [sound, dispatch]);
+
+    const formattedTime = (millis) => {
+        const minutes = Math.floor(millis / 60000);
+        const seconds = Math.floor((millis % 60000) / 1000).toFixed(0);
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
+    useEffect(() => {
+        Animated.timing(progressAnim, {
+            toValue: progress,
+            duration: 500,
+            easing: Easing.linear,
+            useNativeDriver: false,
+        }).start();
+    }, [progress]);
+
+    if (!sound) return null;
+
     return (
-        <TouchableOpacity
-            style={{
-                // position: 'absolute',
-                // bottom: 0,
-                // left: 20,
-                // right: 20,
-                zIndex:1,
-                backgroundColor: '#333',
-                padding: 10,
-                borderRadius: 10,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-            }}
-            onPress={() => navigation.navigate('MeditationPlayer', { item })}
-        >
-            <Text style={{ color: '#fff' }}>{item.name}</Text>
-            <TouchableOpacity onPress={togglePlayPause}>
-                <FeatherIcon name={isPlaying ? 'pause' : 'play'} size={25} color="#fff" />
-            </TouchableOpacity>
-        </TouchableOpacity>
+        <View style={{ position: 'absolute', zIndex: 1, right: 0, left: 0, bottom: 0, backgroundColor: '#fff', paddingVertical: 10,paddingHorizontal:20 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={styles.currentItemText}>
+                    {formattedTime(progress * duration)}
+                </Text>
+
+                <Text style={styles.currentItemText}>{currentItem.name}</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('MeditationPlayer', { item: currentItem })}>
+                    <FeatherIcon name='maximize-2' size={19} color="#000" />
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.progressContainer} >
+                <Animated.View style={[styles.progressBar, {
+                    width: progressAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', '100%']
+                    })
+                }]} />
+            </View>
+
+        </View>
     );
 };
 

@@ -4,17 +4,17 @@ import styles from '../style'
 import { useSelector } from 'react-redux';
 import { useData } from '../context/DataContext';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FloatingPlayer from '../components/FloatingPlayer';
 
 export default function FavoritesScreen({ navigation }) {
   const favorites = useSelector((state) => state.user.userInfo.favorites);
   const { data } = useData();
-
   const favoriteArticles = data.articles.filter(article => favorites.articles.includes(article.id));
   const favoritePrograms = data.programs.filter(program => favorites.programs.includes(program.id));
 
 
   return (
-    <View>
+    <>
       <View style={styles.meditationHeader}>
         <Text style={styles.meditationHeaderText}>Favorites</Text>
       </View>
@@ -44,6 +44,8 @@ export default function FavoritesScreen({ navigation }) {
           ))}
         </View>
       </View>
-    </View>
+      <FloatingPlayer />
+
+    </>
   )
 }

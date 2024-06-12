@@ -3,10 +3,12 @@ import React from 'react'
 import styles from '../style'
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
+import FloatingPlayer from '../components/FloatingPlayer';
 
 export default function AccountScreen() {
     return (
-        <View style={{ backgroundColor: '#fff', flex: 1 }}>
+        <>
+           <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <View style={styles.meditationHeader}>
                 <Text style={styles.meditationHeaderText}>Yunus Sungur</Text>
                 <Text style={styles.accountText}>Health</Text>
@@ -52,5 +54,9 @@ export default function AccountScreen() {
                 </View>
             </View>
         </View>
+        <FloatingPlayer />
+
+        </>
+     
     )
 }

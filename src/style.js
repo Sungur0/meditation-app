@@ -464,7 +464,23 @@ const styles = StyleSheet.create({
         fontSize:15,
         color:'#000',
         fontFamily: 'Montserrat-Medium',
-    }
+    },
+    currentItemText:{
+        fontFamily: 'Montserrat-Medium',
+
+    },
+    progressContainer: {
+        height: 5,
+        backgroundColor: '#d3d3d3',
+        borderRadius: 5,
+        overflow: 'hidden',
+        marginTop: 10,
+    },
+    progressBar: {
+        height: '100%',
+        backgroundColor: '#89051f',
+        borderRadius: 5,
+    },
 
 })
 

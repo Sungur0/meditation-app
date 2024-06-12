@@ -9,31 +9,35 @@ import CircularProgress from '../components/CircularProgress';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFavorite, removeFavorite } from '../redux/UserSlice';
+import { useAudio } from '../context/AudioContext';
+import {
+    setSound,
+    setIsPlaying,
+    setProgress,
+    setDuration,
+    setSelectedTime,
+    resetAudio,
+    setCurrentItem
+} from '../redux/audioSlice';
 
 export default function MeditationPlayer({ route, navigation }) {
     const { item } = route.params;
-    const [sound, setSound] = useState();
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [duration, setDuration] = useState(0);
-    const [selectedTime, setSelectedTime] = useState(0);
-    const intervalRef = useRef(null);
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user);
-    const handleBackPress = () => {
-        stopMeditation();
-        navigation.goBack();
-    };
+    const { isPlaying, progress, duration, selectedTime } = useSelector((state) => state.audio);
+    const { sound, loadSound, unloadSound } = useAudio();
+    const intervalRef = useRef(null);
 
-    const isFavorite = user.favorites?.includes(item.id);
+    const user = useSelector((state) => state.user);
+    const isFavorite = user.userInfo.favorites.programs.includes(item.id);
     const [isFavorited, setIsFavorited] = useState(isFavorite);
 
+    useEffect(() => {
+        dispatch(setCurrentItem(item));
+    }, [dispatch]);
 
     useEffect(() => {
-        const isFavorite = user.userInfo.favorites.programs.includes(item.id);
-        console.log(isFavorite)
         setIsFavorited(isFavorite);
-    }, []);
+    }, [isFavorite]);
 
     const handleToggleFavorite = () => {
         if (isFavorited) {
@@ -49,7 +53,8 @@ export default function MeditationPlayer({ route, navigation }) {
         if (sound) {
             const onPlaybackStatusUpdate = (status) => {
                 if (status.isLoaded) {
-                    setProgress(status.positionMillis / duration);
+                    const currentProgress = status.positionMillis / (selectedTime * 60000);
+                    dispatch(setProgress(currentProgress));
                 }
             };
             sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
@@ -58,13 +63,14 @@ export default function MeditationPlayer({ route, navigation }) {
                 sound.setOnPlaybackStatusUpdate(null);
             };
         }
-    }, [sound, duration]);
+    }, [sound, selectedTime]);
 
     useEffect(() => {
         if (isPlaying && selectedTime > 0) {
             intervalRef.current = setInterval(() => {
                 sound.getStatusAsync().then((status) => {
                     if (status.positionMillis >= selectedTime * 60000) {
+                        // COMPLETED MEDİTATİON +1  kod gelicek 
                         stopMeditation();
                     }
                 });
@@ -89,15 +95,13 @@ export default function MeditationPlayer({ route, navigation }) {
                 } else {
                     await sound.playAsync();
                 }
-                setIsPlaying(!isPlaying);
+                dispatch(setIsPlaying(!isPlaying));
             } else {
-                const { sound: newSound } = await Audio.Sound.createAsync(
-                    require('../assets/sounds/audiomass.mp3')
-                );
-                setSound(newSound);
+                const newSound = await loadSound(require('../assets/sounds/audiomass.mp3'));
                 await newSound.playAsync();
-                setIsPlaying(true);
-                setDuration(selectedTime * 60000);
+                dispatch(setIsPlaying(true));
+                dispatch(setDuration(selectedTime * 60000));
+                
             }
         } catch (error) {
             console.log('Error toggling sound: ', error);
@@ -108,10 +112,8 @@ export default function MeditationPlayer({ route, navigation }) {
         if (sound) {
             try {
                 await sound.stopAsync();
-                await sound.unloadAsync();
-                setSound(null);
-                setIsPlaying(false);
-                setProgress(0); 
+                await unloadSound();
+                dispatch(resetAudio());
                 if (intervalRef.current) {
                     clearInterval(intervalRef.current);
                     intervalRef.current = null;
@@ -122,11 +124,15 @@ export default function MeditationPlayer({ route, navigation }) {
         }
     };
 
+    const handleBackPress = () => {
+        navigation.goBack();
+    };
 
     const handleSelectTime = (time) => {
-        setSelectedTime(time);
-        setDuration(time * 60000);
+        dispatch(setSelectedTime(time));
+        dispatch(setDuration(time * 60000));
     };
+
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground

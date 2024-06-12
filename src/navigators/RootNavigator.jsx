@@ -13,7 +13,7 @@ import ArticleDetail from '../screens/ArticleDetail';
 import AccountScreen from '../screens/AccountScreen';
 import FavoritesScreen from '../screens/FavoritesScreen'
 import React from 'react';
-
+import FloatingPlayer from '../components/FloatingPlayer';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -93,6 +93,7 @@ const TabNavigator = () => (
 export default function RootNavigator() {
     return (
         <NavigationContainer>
+
             <Stack.Navigator>
                 {/* <Stack.Screen
                     name="Splash"
@@ -121,6 +122,7 @@ export default function RootNavigator() {
                 <Stack.Screen name='ArticleDetail' component={ArticleDetail} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
 
             </Stack.Navigator>
+
         </NavigationContainer>
     );
 }

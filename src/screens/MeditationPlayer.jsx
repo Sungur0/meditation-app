@@ -23,13 +23,16 @@ import {
 export default function MeditationPlayer({ route, navigation }) {
     const { item } = route.params;
     const dispatch = useDispatch();
-    const { isPlaying, progress, duration, selectedTime } = useSelector((state) => state.audio);
+    const { isPlaying, progress, duration, selectedTime,currentItem } = useSelector((state) => state.audio);
     const { sound, loadSound, unloadSound } = useAudio();
     const intervalRef = useRef(null);
 
     const user = useSelector((state) => state.user);
     const isFavorite = user.userInfo.favorites.programs.includes(item.id);
     const [isFavorited, setIsFavorited] = useState(isFavorite);
+
+
+    console.log(item)
 
     useEffect(() => {
         dispatch(setCurrentItem(item));
@@ -48,7 +51,18 @@ export default function MeditationPlayer({ route, navigation }) {
             setIsFavorited(true);
         }
     };
-
+    useEffect(() => {
+        const handleNewItem = async () => {
+            if (currentItem && currentItem.id !== item.id) {
+                if (sound) {
+                    await stopMeditation();
+                }
+                dispatch(resetAudio());
+            }
+        };
+        handleNewItem();
+    }, [item]);
+    
     useEffect(() => {
         if (sound) {
             const onPlaybackStatusUpdate = (status) => {
@@ -70,7 +84,7 @@ export default function MeditationPlayer({ route, navigation }) {
             intervalRef.current = setInterval(() => {
                 sound.getStatusAsync().then((status) => {
                     if (status.positionMillis >= selectedTime * 60000) {
-                        // COMPLETED MEDİTATİON +1  kod gelicek 
+                        // COMPLETED MEDİTATİON +1  
                         stopMeditation();
                     }
                 });
@@ -97,7 +111,7 @@ export default function MeditationPlayer({ route, navigation }) {
                 }
                 dispatch(setIsPlaying(!isPlaying));
             } else {
-                const newSound = await loadSound(require('../assets/sounds/audiomass.mp3'));
+                const newSound = await loadSound(item.sound);
                 await newSound.playAsync();
                 dispatch(setIsPlaying(true));
                 dispatch(setDuration(selectedTime * 60000));

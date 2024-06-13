@@ -18,11 +18,9 @@ export default function HomeScreen({ navigation }) {
   return (
     <>
       <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} showsVerticalScrollIndicator={false}>
-
         <View style={styles.meditationHeader}>
           <Text style={styles.meditationHeaderText}>Choose your meditation program</Text>
         </View>
-
         <View style={styles.meditationCardContainer}>
           {data.categories.map((item, i) => (
             <TouchableOpacity style={styles.meditationCard} key={i} activeOpacity={0.9} onPress={() => goToMeditationProgram(item)}>
@@ -37,13 +35,8 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </View>
-
       </ScrollView>
       <FloatingPlayer />
-
     </>
-
-
-
   )
 }

@@ -1,5 +1,5 @@
 import { Image } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionSpecs, TransitionPresets } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from "@react-navigation/native";
 import MeditationProgram from '../screens/MeditationProgram';
@@ -118,7 +118,12 @@ export default function RootNavigator() {
                 />
                 <Stack.Screen name='meditationProgram' component={MeditationProgram} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
                 <Stack.Screen name='ProgramList' component={ProgramList} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
-                <Stack.Screen name='MeditationPlayer' component={MeditationPlayer} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+                <Stack.Screen name='MeditationPlayer' component={MeditationPlayer} options={{
+                    headerShown: false,
+                    headerLeft: false,
+                    gestureEnabled: false,
+                    ...TransitionPresets.RevealFromBottomAndroid,
+                }} />
                 <Stack.Screen name='ArticleDetail' component={ArticleDetail} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
 
             </Stack.Navigator>

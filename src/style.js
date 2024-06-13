@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
         fontSize: 28,
     },
     meditationCardContainer: {
-        marginHorizontal: 20
+        marginHorizontal: 20,
+        paddingBottom:60
     },
     meditationCard: {
         width: '100%',
@@ -194,7 +195,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 15,
         marginVertical: 8,
-
     },
     programListText: {
         fontFamily: 'Montserrat-Regular',
@@ -242,14 +242,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         top: 180,
         bottom: 0,
-
     },
     progressTimeText: {
         color: '#fff',
         fontSize: 18,
         fontFamily: 'Montserrat-Regular',
         zIndex: 5,
-
     },
     meditationProgramName: {
         position: 'absolute',
@@ -277,7 +275,6 @@ const styles = StyleSheet.create({
     },
     option: {
         paddingHorizontal: 5
-
     },
     timeText: {
         fontFamily: 'Montserrat-regular',
@@ -408,7 +405,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         alignItems: 'center',
         marginTop: 20
-
     },
     accountStatusCardHeaderText: {
         fontFamily: 'Montserrat-Medium',
@@ -467,7 +463,6 @@ const styles = StyleSheet.create({
     },
     currentItemText:{
         fontFamily: 'Montserrat-Medium',
-
     },
     progressContainer: {
         height: 5,
@@ -481,7 +476,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#89051f',
         borderRadius: 5,
     },
-
 })
 
 export default styles

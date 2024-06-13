@@ -15,12 +15,12 @@ const subcategory = [
 ]
 
 const programs = [
-  { id: 1, name: 'Breathing', subId: 1, img: require('../assets/fullimage/full.jpg'), },
-  { id: 2, name: 'Breach and wond', subId: 1, img: require('../assets/fullimage/program.jpg'), },
-  { id: 3, name: 'Breach and hand', subId: 1, img: require('../assets/fullimage/program.jpg'), },
-  { id: 4, name: 'Body Scan', subId: 2, img: require('../assets/fullimage/program.jpg'), },
-  { id: 5, name: 'Breathing with the body', subId: 2, img: require('../assets/fullimage/program.jpg'), },
-  { id: 6, name: 'Deep relaxation', subId: 3, img: require('../assets/fullimage/program.jpg'), }
+  { id: 1, name: 'Breathing', subId: 1, img: require('../assets/fullimage/full.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },
+  { id: 2, name: 'Breach and wond', subId: 1, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomas.mp3'), },
+  { id: 3, name: 'Breach and hand', subId: 1, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },
+  { id: 4, name: 'Body Scan', subId: 2, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },
+  { id: 5, name: 'Breathing with the body', subId: 2, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },
+  { id: 6, name: 'Deep relaxation', subId: 3, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomass.mp3'), }
 ]
 
 const articles = [

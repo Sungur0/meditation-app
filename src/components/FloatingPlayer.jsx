@@ -37,7 +37,7 @@ const FloatingPlayer = () => {
 
             return () => clearInterval(interval);
         }
-    }, [sound,selectedTime, dispatch]);
+    }, [sound, selectedTime, dispatch]);
 
     const formattedTime = (millis) => {
         const minutes = Math.floor(millis / 60000);
@@ -58,15 +58,22 @@ const FloatingPlayer = () => {
 
     return (
         <View style={{ position: 'absolute', zIndex: 1, right: 0, left: 0, bottom: 0, backgroundColor: '#fff', paddingVertical: 10, paddingHorizontal: 20 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={styles.currentItemText}>
-                    {formattedTime(progress * duration)}
-                </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.currentItemText}>
+                        {formattedTime(progress * duration)}
+                    </Text>
+                </View>
 
-                <Text style={styles.currentItemText}>{currentItem.name}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('MeditationPlayer', { item: currentItem })}>
-                    <FeatherIcon name='maximize-2' size={19} color="#000" />
-                </TouchableOpacity>
+                <View style={{ flex: 2, alignItems: 'center' }}>
+                    <Text style={styles.currentItemText}>{currentItem.name}</Text>
+                </View>
+
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('MeditationPlayer', { item: currentItem })}>
+                        <FeatherIcon name='maximize-2' size={19} color="#000" />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <View style={styles.progressContainer} >

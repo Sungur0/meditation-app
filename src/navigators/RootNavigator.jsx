@@ -95,7 +95,7 @@ export default function RootNavigator() {
         <NavigationContainer>
 
             <Stack.Navigator>
-                {/* <Stack.Screen
+                <Stack.Screen
                     name="Splash"
                     component={SplashScreen}
                     options={{ headerShown: false }}
@@ -107,7 +107,7 @@ export default function RootNavigator() {
                         headerShown: false,
                         gestureEnabled: false,
                     }}
-                /> */}
+                />
                 <Stack.Screen
                     name="App"
                     component={TabNavigator}

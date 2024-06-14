@@ -30,7 +30,6 @@ export default function MeditationPlayer({ route, navigation }) {
     const isFavorite = user.userInfo.favorites.programs.includes(item.id);
     const [isFavorited, setIsFavorited] = useState(isFavorite);
     const [bgMusic, setBgMusic] = useState(false)
-    console.log(bgMusic)
 
     useEffect(() => {
         dispatch(setCurrentItem(item));
@@ -143,12 +142,19 @@ export default function MeditationPlayer({ route, navigation }) {
         }
     };
 
-    const toggleBackgroundMusic = () => {
+    const toggleBackgroundMusic = async () => {
         if (bgMusic) {
-            navigation.navigate('Meditation ');
+            navigation.navigate('Meditation');
         } else {
-            stopMeditation();
-            navigation.navigate('Meditation ');
+            if (sound) {
+                const status = await sound.getStatusAsync();
+                console.log(status)
+                const listenedSeconds = Math.floor(status.positionMillis / 1000);
+                console.log(listenedSeconds)
+                dispatch(addListeningTime({ listeningTime: listenedSeconds }));
+            }
+            await stopMeditation();
+            navigation.navigate('Meditation');
         }
     };
 

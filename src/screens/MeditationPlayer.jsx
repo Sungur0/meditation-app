@@ -3,12 +3,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import styles from '../style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { Audio } from 'expo-av';
 import TimerPicker from '../components/TimePicker';
 import CircularProgress from '../components/CircularProgress';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
-import { addFavorite, removeFavorite } from '../redux/UserSlice';
+import { addFavorite, removeFavorite, setCompletedSongs, addListeningTime } from '../redux/UserSlice';
 import { useAudio } from '../context/AudioContext';
 import {
     setSound,
@@ -23,16 +22,15 @@ import {
 export default function MeditationPlayer({ route, navigation }) {
     const { item } = route.params;
     const dispatch = useDispatch();
-    const { isPlaying, progress, duration, selectedTime,currentItem } = useSelector((state) => state.audio);
+    const { isPlaying, progress, duration, selectedTime, currentItem } = useSelector((state) => state.audio);
     const { sound, loadSound, unloadSound } = useAudio();
     const intervalRef = useRef(null);
 
     const user = useSelector((state) => state.user);
     const isFavorite = user.userInfo.favorites.programs.includes(item.id);
     const [isFavorited, setIsFavorited] = useState(isFavorite);
-
-
-    console.log(item)
+    const [bgMusic, setBgMusic] = useState(false)
+    console.log(bgMusic)
 
     useEffect(() => {
         dispatch(setCurrentItem(item));
@@ -51,10 +49,14 @@ export default function MeditationPlayer({ route, navigation }) {
             setIsFavorited(true);
         }
     };
+
     useEffect(() => {
         const handleNewItem = async () => {
             if (currentItem && currentItem.id !== item.id) {
                 if (sound) {
+                    const status = await sound.getStatusAsync();
+                    const listenedSeconds = Math.floor(status.positionMillis / 1000);
+                    dispatch(addListeningTime({ listeningTime: listenedSeconds }));
                     await stopMeditation();
                 }
                 dispatch(resetAudio());
@@ -62,12 +64,14 @@ export default function MeditationPlayer({ route, navigation }) {
         };
         handleNewItem();
     }, [item]);
-    
+
+
     useEffect(() => {
         if (sound) {
             const onPlaybackStatusUpdate = (status) => {
                 if (status.isLoaded) {
                     const currentProgress = status.positionMillis / (selectedTime * 60000);
+
                     dispatch(setProgress(currentProgress));
                 }
             };
@@ -84,7 +88,8 @@ export default function MeditationPlayer({ route, navigation }) {
             intervalRef.current = setInterval(() => {
                 sound.getStatusAsync().then((status) => {
                     if (status.positionMillis >= selectedTime * 60000) {
-                        // COMPLETED MEDİTATİON +1  
+                        dispatch(setCompletedSongs());
+                        dispatch(addListeningTime({ listeningTime: selectedTime * 60 }));
                         stopMeditation();
                     }
                 });
@@ -115,7 +120,7 @@ export default function MeditationPlayer({ route, navigation }) {
                 await newSound.playAsync();
                 dispatch(setIsPlaying(true));
                 dispatch(setDuration(selectedTime * 60000));
-                
+
             }
         } catch (error) {
             console.log('Error toggling sound: ', error);
@@ -138,8 +143,23 @@ export default function MeditationPlayer({ route, navigation }) {
         }
     };
 
+    const toggleBackgroundMusic = () => {
+        if (bgMusic) {
+            navigation.navigate('Meditation ');
+        } else {
+            stopMeditation();
+            navigation.navigate('Meditation ');
+        }
+    };
+
+
     const handleBackPress = () => {
-        navigation.goBack();
+        if (isPlaying) {
+            navigation.navigate('Meditation ')
+        } else {
+            navigation.goBack();
+
+        }
     };
 
     const handleSelectTime = (time) => {
@@ -161,7 +181,6 @@ export default function MeditationPlayer({ route, navigation }) {
                         <Icon name={isFavorited ? 'heart-sharp' : 'heart-outline'} size={24} color="#fff" />
                     </TouchableOpacity >
                 </View>
-
                 <View style={styles.playView}>
                     <View style={styles.playOverlay} ></View>
                     <TouchableOpacity activeOpacity={0.8} onPress={toggleMeditation} style={styles.playViewCon}>
@@ -185,12 +204,29 @@ export default function MeditationPlayer({ route, navigation }) {
                 <View style={styles.meditationProgramName}>
                     <Text style={styles.meditationProgramNameText}>{item.name}</Text>
                 </View>
-                <View style={styles.programTimerView}>
-                    <FeatherIcon name='clock' size={25} color="#fff" />
-                    <TimerPicker onSelectTime={handleSelectTime} />
-                </View>
+                {!isPlaying ? (
+                    <View style={styles.programTimerView}>
+                        <FeatherIcon name='clock' size={25} color="#fff" />
+                        <TimerPicker onSelectTime={handleSelectTime} />
+                    </View>
+                ) : (
 
+                    <View style={styles.programTimerView}>
+                        <TouchableOpacity onPress={toggleBackgroundMusic} activeOpacity={0.9}>
+                            <FeatherIcon name='minimize-2' size={25} color="#fff" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={bgMusic ? styles.backgroundMusicButtonActive : styles.backgroundMusicButton}
+                            onPress={() => setBgMusic(true)}
+                        >
+                            <Text style={bgMusic ? styles.activeButtonText : styles.buttonText}>Background Music</Text>
+                        </TouchableOpacity>
+                    </View>
+
+
+                )}
             </ImageBackground>
-        </View>
+        </View >
     )
 }

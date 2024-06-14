@@ -8,9 +8,12 @@ import FloatingPlayer from '../components/FloatingPlayer';
 
 export default function HomeScreen({ navigation }) {
   const uniqueId = DeviceInfo.getUniqueIdSync();
+  const { data } = useData();
   console.log(uniqueId)
 
-  const { data } = useData();
+  
+  const user = useSelector((state) => state.user);
+  console.log(user)
 
   const goToMeditationProgram = (item) => {
     navigation.navigate('meditationProgram', { item });

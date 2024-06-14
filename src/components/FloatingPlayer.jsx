@@ -10,32 +10,34 @@ const FloatingPlayer = () => {
     const dispatch = useDispatch();
     const { sound } = useAudio();
     const navigation = useNavigation();
-    const { isPlaying, progress, duration, currentItem } = useSelector((state) => state.audio);
+    const { isPlaying, progress, duration, currentItem, selectedTime } = useSelector((state) => state.audio);
     const progressAnim = useRef(new Animated.Value(0)).current;
 
-    const togglePlayPause = async () => {
-        if (sound) {
-            if (isPlaying) {
-                await sound.pauseAsync();
-            } else {
-                await sound.playAsync();
-            }
-            dispatch(setIsPlaying(!isPlaying));
-        }
-    };
+    // const togglePlayPause = async () => {
+    //     if (sound) {
+    //         if (isPlaying) {
+    //             await sound.pauseAsync();
+    //         } else {
+    //             await sound.playAsync();
+    //         }
+    //         dispatch(setIsPlaying(!isPlaying));
+    //     }
+    // };
 
     useEffect(() => {
         if (sound) {
             const interval = setInterval(async () => {
                 const status = await sound.getStatusAsync();
                 if (status.isLoaded) {
-                    dispatch(setProgress(status.positionMillis / duration));
+                    const currentProgress = status.positionMillis / (selectedTime * 60000);
+                    dispatch(setProgress(currentProgress));
+
                 }
             }, 1000);
 
             return () => clearInterval(interval);
         }
-    }, [sound, dispatch]);
+    }, [sound,selectedTime, dispatch]);
 
     const formattedTime = (millis) => {
         const minutes = Math.floor(millis / 60000);
@@ -55,7 +57,7 @@ const FloatingPlayer = () => {
     if (!sound) return null;
 
     return (
-        <View style={{ position: 'absolute', zIndex: 1, right: 0, left: 0, bottom: 0, backgroundColor: '#fff', paddingVertical: 10,paddingHorizontal:20 }}>
+        <View style={{ position: 'absolute', zIndex: 1, right: 0, left: 0, bottom: 0, backgroundColor: '#fff', paddingVertical: 10, paddingHorizontal: 20 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={styles.currentItemText}>
                     {formattedTime(progress * duration)}

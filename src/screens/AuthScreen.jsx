@@ -12,22 +12,24 @@ export default function AuthScreen({ route, navigation }) {
     const dispatch = useDispatch();
 
     const [isLogin, setIsLogin] = useState(true);
-   
+
     const handleSubmit = () => {
         if (!handleIsValidEmail(email)) {
             Alert.alert('Hata', 'Geçerli bir e-posta adresi giriniz.');
             return;
         }
-        if (isLogin) {
-            dispatch(login({ userInfo: { email, password} }));
+        if (!isLogin) {
+            dispatch(login({ userInfo: { email, password } }));
             navigation.navigate('App');
-
-
         } else {
-            dispatch(signUp({ userInfo: {  email, name, password } }));
+            dispatch(signUp({
+                userInfo: {
+                    email,
+                    name,
+                    password,
+                }
+            }));
             navigation.navigate('App');
-
-
         }
     };
 

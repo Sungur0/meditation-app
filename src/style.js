@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     },
     meditationCardContainer: {
         marginHorizontal: 20,
-        paddingBottom:60
+        paddingBottom: 60
     },
     meditationCard: {
         width: '100%',
@@ -340,6 +340,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
         marginBottom: 50,
         height: 225,
+        borderRadius: 20
     },
     verticalArticleContainer: {
         flexDirection: 'row',
@@ -446,22 +447,22 @@ const styles = StyleSheet.create({
         fontSize: 21,
         marginBottom: 15
     },
-    favoritesCardContainer:{
-        backgroundColor:'#d9d9d9',
-        marginVertical:10,
-        paddingVertical:15,
-        paddingHorizontal:15,
-        borderRadius:15,
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center'
+    favoritesCardContainer: {
+        backgroundColor: '#d9d9d9',
+        marginVertical: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        borderRadius: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
-    favoritesCardText:{
-        fontSize:15,
-        color:'#000',
+    favoritesCardText: {
+        fontSize: 15,
+        color: '#000',
         fontFamily: 'Montserrat-Medium',
     },
-    currentItemText:{
+    currentItemText: {
         fontFamily: 'Montserrat-Medium',
     },
     progressContainer: {
@@ -476,6 +477,28 @@ const styles = StyleSheet.create({
         backgroundColor: '#89051f',
         borderRadius: 5,
     },
+    backgroundMusicButton: {
+        borderRadius: 20,
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderColor: '#fff',
+        marginLeft: 60
+    },
+    backgroundMusicButtonActive: {
+        borderRadius: 20,
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderColor: '#fff',
+        backgroundColor: '#fff',
+        marginLeft: 60
+    },
+    activeButtonText:{
+        color: '#000',
+        fontSize: 16,
+        fontFamily: 'Montserrat-Regular'
+    }
 })
 
 export default styles

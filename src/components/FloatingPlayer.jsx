@@ -13,16 +13,16 @@ const FloatingPlayer = () => {
     const { isPlaying, progress, duration, currentItem, selectedTime } = useSelector((state) => state.audio);
     const progressAnim = useRef(new Animated.Value(0)).current;
 
-    // const togglePlayPause = async () => {
-    //     if (sound) {
-    //         if (isPlaying) {
-    //             await sound.pauseAsync();
-    //         } else {
-    //             await sound.playAsync();
-    //         }
-    //         dispatch(setIsPlaying(!isPlaying));
-    //     }
-    // };
+    const togglePlayPause = async () => {
+        if (sound) {
+            if (isPlaying) {
+                await sound.pauseAsync();
+            } else {
+                await sound.playAsync();
+            }
+            dispatch(setIsPlaying(!isPlaying));
+        }
+    };
 
     useEffect(() => {
         if (sound) {
@@ -66,12 +66,14 @@ const FloatingPlayer = () => {
                 </View>
 
                 <View style={{ flex: 2, alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('MeditationPlayer', { item: currentItem })}>
                     <Text style={styles.currentItemText}>{currentItem.name}</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <TouchableOpacity onPress={() => navigation.navigate('MeditationPlayer', { item: currentItem })}>
-                        <FeatherIcon name='maximize-2' size={19} color="#000" />
+                    <TouchableOpacity onPress={togglePlayPause} >
+                        <FeatherIcon name={isPlaying ? 'pause' : 'play'} size={19} color="#000" />
                     </TouchableOpacity>
                 </View>
             </View>

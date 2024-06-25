@@ -494,10 +494,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginLeft: 60
     },
-    activeButtonText:{
+    activeButtonText: {
         color: '#000',
         fontSize: 16,
         fontFamily: 'Montserrat-Regular'
+    },
+    criteriaContainer: {
+        marginTop: 10,
+    },
+    invalid: {
+        fontFamily: 'Montserrat-Regular',
+        color: 'red'
+    },
+    valid: {
+        fontFamily: 'Montserrat-Regular',
+        color: 'green'
     }
 })
 

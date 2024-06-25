@@ -3,13 +3,13 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../style';
 import { useData } from '../context/DataContext';
-import DeviceInfo from 'react-native-device-info';
+// import DeviceInfo from 'react-native-device-info';
 import FloatingPlayer from '../components/FloatingPlayer';
 
 export default function HomeScreen({ navigation }) {
-  const uniqueId = DeviceInfo.getUniqueIdSync();
+  // const uniqueId = DeviceInfo.getUniqueIdSync();
   const { data } = useData();
-  console.log(uniqueId)
+  // console.log(uniqueId)
 
   
   const user = useSelector((state) => state.user);

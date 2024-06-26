@@ -5,6 +5,7 @@ import styles from '../style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFavorite, removeFavorite } from '../redux/UserSlice';
+import FloatingPlayer from '../components/FloatingPlayer';
 
 
 export default function ArticleDetail({ route, navigation }) {
@@ -15,7 +16,7 @@ export default function ArticleDetail({ route, navigation }) {
     const isFavorite = user.favorites?.includes(item.id);
     const [isFavorited, setIsFavorited] = useState(isFavorite);
 
-
+    console.log(user.userInfo.favorites.articles)
     useEffect(() => {
         const isFavorite = user.userInfo.favorites.articles.includes(item.id);
         console.log(isFavorite)
@@ -35,7 +36,8 @@ export default function ArticleDetail({ route, navigation }) {
         navigation.goBack();
     };
     return (
-        <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} bounces={true} showsVerticalScrollIndicator={false}>
+        <>
+         <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} bounces={true} showsVerticalScrollIndicator={false}>
             <View style={{ height: '50%', width: '100%', position: 'absolute', }}>
                 <ImageBackground source={item.img} style={{ height: '100%', width: '100%', }}>
                 </ImageBackground>
@@ -67,5 +69,9 @@ export default function ArticleDetail({ route, navigation }) {
 
 
         </ScrollView>
+    <FloatingPlayer />
+
+        </>
+       
     )
 }

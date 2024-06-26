@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React from 'react'
 import styles from '../style'
 import { useSelector } from 'react-redux';
@@ -12,9 +12,20 @@ export default function FavoritesScreen({ navigation }) {
   const favoriteArticles = data.articles.filter(article => favorites.articles.includes(article.id));
   const favoritePrograms = data.programs.filter(program => favorites.programs.includes(program.id));
 
+  console.log(favoriteArticles)
+
+  const goToMeditationProgram = (item) => {
+    navigation.navigate('MeditationPlayer', { item });
+  };
+
+  const gotToMeditationArticle = (item) => {
+    navigation.navigate('ArticleDetail', { item });
+
+  }
 
   return (
     <>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.meditationHeader}>
         <Text style={styles.meditationHeaderText}>Favorites</Text>
       </View>
@@ -22,30 +33,44 @@ export default function FavoritesScreen({ navigation }) {
       <View style={styles.favoritesViewContainer}>
         <View>
           <Text style={styles.favoritesHeaderText}>Programs</Text>
-          {favoritePrograms.map(program => (
-            <TouchableOpacity key={program.id} style={styles.favoritesCardContainer}  onPress={() => navigation.navigate('MeditationPlayer', { item: program })} activeOpacity={0.6}>
-              <Text style={styles.favoritesCardText}>{program.name}</Text>
-              <Icon name='play-outline' size={24} color="#000" />
-
-            </TouchableOpacity>
-          ))}
+          <View style={styles.favoritesVerticalContainer}>
+          {favoritePrograms.length > 0 ? (
+              favoritePrograms.map((program, i) => (
+                <TouchableOpacity style={styles.articleContainer} key={program.id} onPress={() => goToMeditationProgram(program)}>
+                  <Image source={program.img} style={styles.categoryImg}></Image>
+                  <Text style={styles.favoritesCardName}>{program.name}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noFavoritesText}>There are currently no programs in your favorites.</Text>
+            )}
+          </View>
         </View>
       </View>
 
       <View style={styles.favoritesViewContainer}>
         <View>
           <Text style={styles.favoritesHeaderText}>Articles</Text>
-          {favoriteArticles.map(article => (
-            <TouchableOpacity key={article.id} style={styles.favoritesCardContainer} onPress={() => navigation.navigate('ArticleDetail', { item: article })} activeOpacity={0.6}>
-              <Text style={styles.favoritesCardText}>{article.name}</Text>
-              <Icon name='document-text-outline' size={24} color="#000" />
+          <View style={styles.favoritesVerticalContainer}>
 
-            </TouchableOpacity>
-          ))}
+          {favoriteArticles.length > 0 ? (
+              favoriteArticles.map((article, i) => (
+                <TouchableOpacity style={styles.articleContainer} key={article.id} onPress={() => gotToMeditationArticle(article)}>
+                  <Image source={article.img} style={styles.categoryImg}></Image>
+                  <Text style={styles.favoritesCardName}>{article.name}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noFavoritesText}>No articles in your favorites at the moment.</Text>
+            )}
+          </View>
         </View>
       </View>
-      <FloatingPlayer />
+
+    </ScrollView>
+    <FloatingPlayer />
 
     </>
+    
   )
 }

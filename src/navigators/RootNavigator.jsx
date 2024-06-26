@@ -20,6 +20,8 @@ const Tab = createBottomTabNavigator();
 const DiscoverStackScreens = () => (
     <Stack.Navigator >
         <Stack.Screen name='Favorite' component={FavoritesScreen} options={{ headerShown: false, headerLeft: false }} />
+        <Stack.Screen name='ArticleDetail' component={ArticleDetail} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+
     </Stack.Navigator>
 );
 const MeditationStackScreens = () => (
@@ -30,6 +32,8 @@ const MeditationStackScreens = () => (
 const MeditationArticleStackScreens = () => (
     <Stack.Navigator >
         <Stack.Screen name='Meditation Article' component={MeditationArticles} options={{ headerShown: false, headerLeft: false }} />
+        <Stack.Screen name='ArticleDetail' component={ArticleDetail} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
+
     </Stack.Navigator>
 );
 const UserStackScreens = () => (
@@ -123,7 +127,6 @@ export default function RootNavigator() {
                     gestureEnabled: false,
                     ...TransitionPresets.RevealFromBottomAndroid,
                 }} />
-                <Stack.Screen name='ArticleDetail' component={ArticleDetail} options={{ headerShown: false, headerLeft: false, gestureEnabled: false, }} />
 
             </Stack.Navigator>
 

@@ -509,7 +509,25 @@ const styles = StyleSheet.create({
     valid: {
         fontFamily: 'Montserrat-Regular',
         color: 'green'
+    },
+    favoritesVerticalContainer:{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+    },
+    favoritesCardName:{
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 15,
+        color: '#000',
+        paddingVertical: 5,
+        marginHorizontal: 10,
+    },
+    noFavoritesText:{
+        fontFamily: 'Montserrat-Medium',
+        fontSize:17,
+        paddingVertical:30
     }
+
 })
 
 export default styles

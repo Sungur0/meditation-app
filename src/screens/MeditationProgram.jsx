@@ -24,8 +24,8 @@ export default function MeditationProgram({ route, navigation }) {
           <Text style={styles.programText}>{item.desc}</Text>
         </View>
         <View style={styles.programBottomContainer}>
-          <Icon name='arrow-forward' size={24} color='#fff' onPress={() => navigation.navigate('ProgramList', { item })} />
           <Text style={styles.programText} onPress={() => navigation.navigate('Meditation ')}>Change Program</Text>
+          <Icon name='arrow-forward' size={24} color='#fff' onPress={() => navigation.navigate('ProgramList', { item })} />
         </View>
       </ImageBackground>
     </View>

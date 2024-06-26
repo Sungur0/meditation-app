@@ -8,6 +8,9 @@ export default function MeditationArticles({ navigation }) {
     const { data } = useData();
 
 
+    const topLocationArticles = data.articles.filter(article => article.topLocation === 1);
+
+
     return (
         <>
             <FloatingPlayer />
@@ -17,7 +20,7 @@ export default function MeditationArticles({ navigation }) {
                     <Text style={styles.meditationHeaderText}>Meditaton Articles</Text>
                 </View>
                 <ScrollView horizontal style={styles.meditationArticlesCardContainer} showsHorizontalScrollIndicator={false}>
-                    {data.articles.map((product, index) => {
+                    {topLocationArticles.map((product, index) => {
                         return (
                             <TouchableOpacity style={styles.categoryCardCon} key={product.id} onPress={() => navigation.navigate('ArticleDetail', { item: product })}>
                                 <View style={styles.card}>
@@ -32,7 +35,7 @@ export default function MeditationArticles({ navigation }) {
                     <Text style={styles.meditationSubHeaderText}>More Articles</Text>
                 </View>
                 <View style={styles.verticalArticleContainer}>
-                    {data.moreArticles.map((article, index) => {
+                    {data.articles.map((article, index) => {
                         return (
                             <TouchableOpacity style={styles.articleContainer} key={article.id} onPress={() => navigation.navigate('ArticleDetail', { item: article })}>
                                 <Image source={article.img} style={styles.categoryImg}></Image>

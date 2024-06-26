@@ -53,17 +53,15 @@ export default function MeditationPlayer({ route, navigation }) {
     const [translateY] = useState(new Animated.Value(0));
 
     const panResponder = PanResponder.create({
-        onMoveShouldSetPanResponder: (evt, gestureState) => {
-            return gestureState.dy > 0;
-        },
+        onMoveShouldSetPanResponder: (evt, gestureState) => gestureState.dy > 0,
         onPanResponderMove: (evt, gestureState) => {
             if (gestureState.dy > 0) {
                 translateY.setValue(gestureState.dy);
             }
         },
         onPanResponderRelease: (evt, gestureState) => {
-            if (gestureState.dy > 100) {  // 100 px'den fazla kaydırılmışsa
-                navigation.navigate('Meditation');
+            if (gestureState.dy > 100) {
+                navigation.goBack();
             } else {
                 Animated.spring(translateY, {
                     toValue: 0,
@@ -75,6 +73,7 @@ export default function MeditationPlayer({ route, navigation }) {
 
     const animatedStyle = {
         transform: [{ translateY: translateY }],
+        height: '100%',
     };
 
     useEffect(() => {
@@ -214,11 +213,9 @@ export default function MeditationPlayer({ route, navigation }) {
         dispatch(setDuration(time * 60000));
     };
     return (
-        <Animated.View
-            style={[{ flex: 1 }, animatedStyle]}
-            {...panResponder.panHandlers}
-        >
+   
             <View style={{ flex: 1 }}>
+            <Animated.View  style={[{ flex: 1 }, animatedStyle]} {...panResponder.panHandlers}>
                 <ImageBackground
                     source={item.img}
                     style={styles.backgroundImage}
@@ -277,7 +274,7 @@ export default function MeditationPlayer({ route, navigation }) {
 
                     )}
                 </ImageBackground>
-            </View >
-        </Animated.View>
+            </Animated.View>
+        </View>
     )
 }

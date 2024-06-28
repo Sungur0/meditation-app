@@ -15,7 +15,7 @@ const subcategory = [
 ]
 
 const programs = [
-  { id: 1, name: 'Breathing', subId: 1, img: require('../assets/fullimage/full.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },
+  { id: 1, name: 'Breathing', subId: 1, img: require('../assets/fullimage/fullcab.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },
   { id: 2, name: 'Breach and wond', subId: 1, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomas.mp3'), },
   { id: 3, name: 'Breach and hand', subId: 1, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },
   { id: 4, name: 'Body Scan', subId: 2, img: require('../assets/fullimage/program.jpg'), sound: require('../assets/sounds/audiomass.mp3'), },

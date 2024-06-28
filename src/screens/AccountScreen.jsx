@@ -26,13 +26,15 @@ const formatTime = (totalSeconds) => {
 };
 
 
+
 export default function AccountScreen() {
     const user = useSelector((state) => state.user);
     const completedMeditations = user.userInfo.musicStats.completedSongs;
     const totalListeningTime = user.userInfo.musicStats.totalListeningTime;
+    const totalArticleTime = user.userInfo.articleStats.timeSpent;
     const formattedListeningTime = formatTime(totalListeningTime);
-
-    console.log(formattedListeningTime == '')
+    const formattedArticleTime = formatTime(totalArticleTime);
+    console.log(formattedArticleTime)
 
     return (
         <>
@@ -81,17 +83,29 @@ export default function AccountScreen() {
                         </View>
                         <Text style={styles.accountStatusCardText}><Text style={styles.accountStatusCardInfo}>{completedMeditations}</Text> Meditations</Text>
                     </View>
-                    {/* <View style={styles.accountStatusCard}>
-                    <LinearGradient
-                        colors={['transparent', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.7)',]}
-                        style={{ height: '100%', position: 'absolute', bottom: 0, zIndex: 0, left: 0, right: 0, borderRadius: 15 }}
-                    />
-                    <View style={styles.accountStatusCardHeader}>
-                        <Icon name='clock' size={24} color="#000" style={styles.accountStatusCardHeaderIcon} />
-                        <Text style={styles.accountStatusCardHeaderText}>How many categories have you completed?</Text>
+                    <View style={styles.accountStatusCard}>
+                        <LinearGradient
+                            colors={['transparent', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.7)']}
+                            style={{ height: '100%', position: 'absolute', bottom: 0, zIndex: 0, left: 0, right: 0, borderRadius: 15 }}
+                        />
+                        <View style={styles.accountStatusCardHeader}>
+                            <Icon name='book' size={24} color="#000" style={styles.accountStatusCardHeaderIcon} />
+                            <Text style={styles.accountStatusCardHeaderText}>How long have you read articles?</Text>
+                        </View>
+                        <Text style={styles.accountStatusCardText}>
+                            {formattedArticleTime ? (
+                                formattedArticleTime.split(' ').map((text, index) => (
+                                    index % 2 === 0 ? (
+                                        <Text key={index} style={styles.accountStatusCardInfo}>{text} </Text>
+                                    ) : (
+                                        <Text key={index}>{text} </Text>
+                                    )
+                                ))
+                            ) : (
+                                <Text style={styles.accountStatusCardInfo}>0</Text>
+                            )}
+                        </Text>
                     </View>
-                    <Text style={styles.accountStatusCardText}><Text style={styles.accountStatusCardInfo}>3</Text> Categories</Text>
-                </View> */}
                 </View>
             </View>
             <FloatingPlayer />

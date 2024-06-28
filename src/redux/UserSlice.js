@@ -13,6 +13,9 @@ const userSlice = createSlice({
                 completedSongs: 0,
                 totalListeningTime: 0,
             },
+            articleStats:{
+                timeSpent: 0,
+            }
         },
     },
     reducers: {
@@ -35,6 +38,9 @@ const userSlice = createSlice({
                 musicStats: {
                     completedSongs: 0,
                     totalListeningTime: 0,
+                },
+                articleStats: {
+                    timeSpent: 0,
                 },
             };
             console.log('Signed up user:', action.payload.userInfo);
@@ -65,8 +71,11 @@ const userSlice = createSlice({
         addListeningTime(state, action) {
             state.userInfo.musicStats.totalListeningTime += action.payload.listeningTime;
         },
+        addScreenTime: (state, action) => {
+            state.userInfo.articleStats.timeSpent += action.payload;
+          },
     },
 });
 
-export const { login, logout, signUp, addFavorite, removeFavorite, setCompletedSongs, addListeningTime } = userSlice.actions;
+export const { login, logout, signUp, addFavorite, removeFavorite, setCompletedSongs, addListeningTime,addScreenTime } = userSlice.actions;
 export default userSlice.reducer;

@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, Animated, Easing } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { setIsPlaying, setProgress } from '../redux/audioSlice';
+import { setIsPlaying, setProgress ,resetAudio} from '../redux/audioSlice';
 import { useAudio } from '../context/AudioContext';
 import styles from '../style';
 const FloatingPlayer = () => {
@@ -24,6 +24,18 @@ const FloatingPlayer = () => {
         }
     };
 
+    const stopMeditation = async () => {
+        if (sound) {
+            try {
+                await sound.stopAsync();
+                await unloadSound();
+                dispatch(resetAudio());
+            } catch (error) {
+                console.log('Error stopping sound: ', error);
+            }
+        }
+    };
+    
     useEffect(() => {
         if (sound) {
             const interval = setInterval(async () => {
@@ -67,13 +79,16 @@ const FloatingPlayer = () => {
 
                 <View style={{ flex: 2, alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => navigation.navigate('MeditationPlayer', { item: currentItem })}>
-                    <Text style={styles.currentItemText}>{currentItem.name}</Text>
+                        <Text style={styles.currentItemText}>{currentItem.name}</Text>
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row',justifyContent:'flex-end' }}>
                     <TouchableOpacity onPress={togglePlayPause} >
                         <FeatherIcon name={isPlaying ? 'pause' : 'play'} size={19} color="#000" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={stopMeditation}  style={{marginLeft:20}}>
+                        <FeatherIcon name='x' size={19} color="#000" />
                     </TouchableOpacity>
                 </View>
             </View>

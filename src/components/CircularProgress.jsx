@@ -11,14 +11,13 @@ const CircularProgress = ({ radius, strokeWidth, progress,  }) => {
         Animated.timing(animatedValue, {
             toValue: progress,
             duration: 500,
-            useNativeDriver: true,
+            useNativeDriver: false, // Set to false to debug JS side performance
         }).start();
     }, [progress]);
 
     useEffect(() => {
-        animatedValue.addListener((v) => {
-            const maxPerc = 100 * v.value / 100;
-            const strokeDashoffset = circumference - (circumference * maxPerc) / 100;
+        const listener = animatedValue.addListener((v) => {
+            const strokeDashoffset = circumference - (circumference * v.value) / 100;
 
             if (animatedCircleRef.current) {
                 animatedCircleRef.current.setNativeProps({
@@ -28,7 +27,7 @@ const CircularProgress = ({ radius, strokeWidth, progress,  }) => {
         });
 
         return () => {
-            animatedValue.removeAllListeners();
+            animatedValue.removeListener(listener);
         };
     }, [circumference]);
 

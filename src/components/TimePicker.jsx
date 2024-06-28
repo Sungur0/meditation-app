@@ -8,7 +8,7 @@ const TimerPicker = ({ onSelectTime }) => {
 
     return (
         <View  style={styles.timerSelectView}>
-            <TouchableOpacity onPress={() => handleTimeSelection(3)} style={styles.option}>
+            <TouchableOpacity onPress={() => handleTimeSelection(1)} style={styles.option}>
                 <Text style={styles.timeText}>3 min</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleTimeSelection(5)} style={[styles.optionBorder,styles.option]}>

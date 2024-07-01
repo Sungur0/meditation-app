@@ -1,12 +1,11 @@
 import { View, Text, Image, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
-import React, { useState, useEffect,useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import styles from '../style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { addFavorite, removeFavorite, addScreenTime } from '../redux/UserSlice';
+import { addFavorite, removeFavorite, addScreenTime, setCompletedArticle } from '../redux/UserSlice';
 import FloatingPlayer from '../components/FloatingPlayer';
-
 
 export default function ArticleDetail({ route, navigation }) {
     const { item } = route.params;
@@ -15,7 +14,8 @@ export default function ArticleDetail({ route, navigation }) {
     const startTimeRef = useRef(null);
     const isFavorite = user.favorites?.includes(item.id);
     const [isFavorited, setIsFavorited] = useState(isFavorite);
-
+    const [hasCompletedArticle, setHasCompletedArticle] = useState(false); // Flag to track completion
+    const [isScrolledToBottom, setIsScrolledToBottom] = useState(false); // State to track scroll position
 
     useEffect(() => {
         const isFavorite = user.userInfo.favorites.articles.includes(item.id);
@@ -41,12 +41,33 @@ export default function ArticleDetail({ route, navigation }) {
             setIsFavorited(true);
         }
     };
+
     const handleBackPress = () => {
         navigation.goBack();
     };
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20;
+        const isScrollingToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+
+        if (isScrollingToBottom && !hasCompletedArticle) {
+            setHasCompletedArticle(true);
+            dispatch(setCompletedArticle({ id: item.id, type: 'article' }));
+        }
+
+        setIsScrolledToBottom(isScrollingToBottom);
+    };
+
     return (
         <>
-            <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} bounces={true} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={{ flex: 1, backgroundColor: '#fff' }}
+                bounces={true}
+                showsVerticalScrollIndicator={false}
+                onScroll={handleScroll}
+                scrollEventThrottle={16} 
+            >
                 <View style={{ height: '50%', width: '100%', position: 'absolute', }}>
                     <ImageBackground source={item.img} style={{ height: '100%', width: '100%', }}>
                     </ImageBackground>
@@ -62,10 +83,8 @@ export default function ArticleDetail({ route, navigation }) {
                     </TouchableOpacity >
                     <TouchableOpacity onPress={handleToggleFavorite} activeOpacity={0.9}>
                         <Icon name={isFavorited ? 'heart-sharp' : 'heart-outline'} size={24} color="#fff" />
-
                     </TouchableOpacity >
                 </View>
-
 
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 170, paddingBottom: 60 }}>
                     <View style={styles.articleDescHeader}>
@@ -75,12 +94,8 @@ export default function ArticleDetail({ route, navigation }) {
                         <Text style={styles.articleDescCardText}>{item.desc}</Text>
                     </View>
                 </View>
-
-
             </ScrollView>
             <FloatingPlayer />
-
         </>
-
-    )
+    );
 }

@@ -207,15 +207,17 @@ export default function MeditationPlayer({ route, navigation }) {
             dispatch(addListeningTime({ listeningTime: listenedSeconds }));
 
             await sound.pauseAsync(); // Pause the sound
+            await dispatch(setIsPlaying(false));
             await sound.setPositionAsync(0); // Reset the playback position to 0
         }
         dispatch(setSelectedTime(time));
         dispatch(setDuration(time * 60000));
     };
+    console.log(isPlaying)
     return (
-   
-            <View style={{ flex: 1 }}>
-            <Animated.View  style={[{ flex: 1 }, animatedStyle]} {...panResponder.panHandlers}>
+
+        <View style={{ flex: 1 }}>
+            <Animated.View style={[{ flex: 1 }, animatedStyle]} {...panResponder.panHandlers}>
                 <ImageBackground
                     source={item.img}
                     style={styles.backgroundImage}
@@ -251,28 +253,12 @@ export default function MeditationPlayer({ route, navigation }) {
                     <View style={styles.meditationProgramName}>
                         <Text style={styles.meditationProgramNameText}>{item.name}</Text>
                     </View>
-                    {!isPlaying ? (
-                        <View style={styles.programTimerView}>
-                            <FeatherIcon name='clock' size={25} color="#fff" />
-                            <TimerPicker onSelectTime={handleSelectTime} />
-                        </View>
-                    ) : (
 
-                        <View style={styles.programTimerView}>
-                            <TouchableOpacity onPress={toggleBackgroundMusic} activeOpacity={0.9}>
-                                <FeatherIcon name='minimize-2' size={25} color="#fff" />
-                            </TouchableOpacity>
+                    <View style={styles.programTimerView}>
+                        <FeatherIcon name='clock' size={25} color="#fff" />
+                        <TimerPicker onSelectTime={handleSelectTime} />
+                    </View>
 
-                            <TouchableOpacity
-                                style={bgMusic ? styles.backgroundMusicButtonActive : styles.backgroundMusicButton}
-                                onPress={() => setBgMusic(true)}
-                            >
-                                <Text style={bgMusic ? styles.activeButtonText : styles.buttonText}>Background Music</Text>
-                            </TouchableOpacity>
-                        </View>
-
-
-                    )}
                 </ImageBackground>
             </Animated.View>
         </View>

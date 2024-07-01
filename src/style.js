@@ -75,9 +75,17 @@ const styles = StyleSheet.create({
     },
     meditationHeader: {
         width: 250,
-        marginHorizontal: 20,
-        paddingTop: 85,
         paddingBottom: 50,
+        paddingTop: 85,
+        marginHorizontal: 20,
+    },
+    accountStatusContainer:{
+        paddingBottom:60
+    },
+    accountMeditationHeader: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between'
     },
     meditationHeaderText: {
         fontFamily: 'Montserrat-Bold',
@@ -405,11 +413,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 10,
         alignItems: 'center',
-        marginTop: 20
+        marginTop: 20,
+        width:'100%'
     },
     accountStatusCardHeaderText: {
         fontFamily: 'Montserrat-Medium',
-        fontSize: 15
+        fontSize: 15,
+        width:'90%'
+
     },
     accountStatusCardHeaderIcon: {
         paddingHorizontal: 5,
@@ -510,22 +521,36 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
         color: 'green'
     },
-    favoritesVerticalContainer:{
+    favoritesVerticalContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
-    favoritesCardName:{
+    favoritesCardName: {
         fontFamily: 'Montserrat-Medium',
         fontSize: 15,
         color: '#000',
         paddingVertical: 5,
         marginHorizontal: 10,
     },
-    noFavoritesText:{
+    noFavoritesText: {
         fontFamily: 'Montserrat-Medium',
-        fontSize:17,
-        paddingVertical:30
+        fontSize: 17,
+        paddingVertical: 30
+    },
+    logoutButton: {
+        marginVertical: 10,
+        paddingTop: 85,
+    },
+    emptyState: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20,
+        width: '100%'
+    },
+    discoverText: {
+        fontFamily: 'Montserrat-Medium',
+
     }
 
 })

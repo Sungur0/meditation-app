@@ -13,8 +13,9 @@ const userSlice = createSlice({
                 completedSongs: 0,
                 totalListeningTime: 0,
             },
-            articleStats:{
+            articleStats: {
                 timeSpent: 0,
+                completedArticles: 0,
             }
         },
     },
@@ -24,8 +25,7 @@ const userSlice = createSlice({
             state.userInfo = action.payload.userInfo;
         },
         logout(state) {
-            state.isLoggedIn = false;
-            state.userInfo = {};
+            return state.initialState;
         },
         signUp(state, action) {
             state.isLoggedIn = true;
@@ -41,6 +41,7 @@ const userSlice = createSlice({
                 },
                 articleStats: {
                     timeSpent: 0,
+                    completedArticles: 0,
                 },
             };
             console.log('Signed up user:', action.payload.userInfo);
@@ -73,9 +74,12 @@ const userSlice = createSlice({
         },
         addScreenTime: (state, action) => {
             state.userInfo.articleStats.timeSpent += action.payload;
-          },
+        },
+        setCompletedArticle(state) {
+            state.userInfo.articleStats.completedArticles += 1;
+        },
     },
 });
 
-export const { login, logout, signUp, addFavorite, removeFavorite, setCompletedSongs, addListeningTime,addScreenTime } = userSlice.actions;
+export const { login, logout, signUp, addFavorite, removeFavorite, setCompletedSongs, addListeningTime, addScreenTime ,setCompletedArticle} = userSlice.actions;
 export default userSlice.reducer;

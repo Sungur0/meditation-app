@@ -25,52 +25,58 @@ export default function FavoritesScreen({ navigation }) {
 
   return (
     <>
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.meditationHeader}>
-        <Text style={styles.meditationHeaderText}>Favorites</Text>
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.meditationHeader}>
+          <Text style={styles.meditationHeaderText}>Favorites</Text>
+        </View>
 
-      <View style={styles.favoritesViewContainer}>
-        <View>
-          <Text style={styles.favoritesHeaderText}>Programs</Text>
-          <View style={styles.favoritesVerticalContainer}>
-          {favoritePrograms.length > 0 ? (
-              favoritePrograms.map((program, i) => (
-                <TouchableOpacity style={styles.articleContainer} key={program.id} onPress={() => goToMeditationProgram(program)}>
-                  <Image source={program.img} style={styles.categoryImg}></Image>
-                  <Text style={styles.favoritesCardName}>{program.name}</Text>
-                </TouchableOpacity>
-              ))
-            ) : (
-              <Text style={styles.noFavoritesText}>There are currently no programs in your favorites.</Text>
-            )}
+        <View style={styles.favoritesViewContainer}>
+          <View>
+            <Text style={styles.favoritesHeaderText}>Programs</Text>
+            <View style={styles.favoritesVerticalContainer}>
+              {favoritePrograms.length > 0 ? (
+                favoritePrograms.map((program, i) => (
+                  <TouchableOpacity style={styles.articleContainer} key={program.id} onPress={() => goToMeditationProgram(program)}>
+                    <Image source={program.img} style={styles.categoryImg}></Image>
+                    <Text style={styles.favoritesCardName}>{program.name}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <>
+                  <Text style={styles.noFavoritesText}>No programs in your favorites at the moment.</Text>
+                  <Text style={styles.discoverText} onPress={() => navigation.navigate('Meditation ')}>Discover: Programs</Text>
+                </>
+              )}
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.favoritesViewContainer}>
-        <View>
-          <Text style={styles.favoritesHeaderText}>Articles</Text>
-          <View style={styles.favoritesVerticalContainer}>
+        <View style={styles.favoritesViewContainer}>
+          <View>
+            <Text style={styles.favoritesHeaderText}>Articles</Text>
+            <View style={styles.favoritesVerticalContainer}>
 
-          {favoriteArticles.length > 0 ? (
-              favoriteArticles.map((article, i) => (
-                <TouchableOpacity style={styles.articleContainer} key={article.id} onPress={() => gotToMeditationArticle(article)}>
-                  <Image source={article.img} style={styles.categoryImg}></Image>
-                  <Text style={styles.favoritesCardName}>{article.name}</Text>
-                </TouchableOpacity>
-              ))
-            ) : (
-              <Text style={styles.noFavoritesText}>No articles in your favorites at the moment.</Text>
-            )}
+              {favoriteArticles.length > 0 ? (
+                favoriteArticles.map((article, i) => (
+                  <TouchableOpacity style={styles.articleContainer} key={article.id} onPress={() => gotToMeditationArticle(article)}>
+                    <Image source={article.img} style={styles.categoryImg}></Image>
+                    <Text style={styles.favoritesCardName}>{article.name}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <>
+                  <Text style={styles.noFavoritesText}>No articles in your favorites at the moment.</Text>
+                  <Text style={styles.discoverText} onPress={() => navigation.navigate('Meditation Article')}>Discover: Articles</Text>
+                </>
+              )}
+            </View>
           </View>
         </View>
-      </View>
 
-    </ScrollView>
-    <FloatingPlayer />
+      </ScrollView>
+      <FloatingPlayer />
 
     </>
-    
+
   )
 }

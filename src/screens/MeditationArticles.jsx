@@ -22,7 +22,7 @@ export default function MeditationArticles({ navigation }) {
                 <ScrollView horizontal style={styles.meditationArticlesCardContainer} showsHorizontalScrollIndicator={false}>
                     {topLocationArticles.map((product, index) => {
                         return (
-                            <TouchableOpacity style={styles.categoryCardCon} key={product.id} onPress={() => navigation.navigate('ArticleDetail', { item: product })}>
+                            <TouchableOpacity style={styles.categoryCardCon} key={product.id} onPress={() => navigation.navigate('ArticleDetail', { item: product })} activeOpacity={0.9}>
                                 <View style={styles.card}>
                                     <Image source={product.img} style={styles.categoryImg}></Image>
                                     <Text style={styles.cardText}>{product.name}</Text>
@@ -37,7 +37,7 @@ export default function MeditationArticles({ navigation }) {
                 <View style={styles.verticalArticleContainer}>
                     {data.articles.map((article, index) => {
                         return (
-                            <TouchableOpacity style={styles.articleContainer} key={article.id} onPress={() => navigation.navigate('ArticleDetail', { item: article })}>
+                            <TouchableOpacity style={styles.articleContainer} key={article.id} onPress={() => navigation.navigate('ArticleDetail', { item: article })} activeOpacity={0.9}>
                                 <Image source={article.img} style={styles.categoryImg}></Image>
                                 <Text style={styles.articleTitle}>{article.name}</Text>
                             </TouchableOpacity>

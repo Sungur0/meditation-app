@@ -3,12 +3,14 @@ import { View, TouchableOpacity, Text, Animated, Easing } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { setIsPlaying, setProgress ,resetAudio} from '../redux/audioSlice';
+import { setIsPlaying, setProgress, resetAudio } from '../redux/audioSlice';
+import { addListeningTime } from '../redux/UserSlice';
 import { useAudio } from '../context/AudioContext';
 import styles from '../style';
+
 const FloatingPlayer = () => {
     const dispatch = useDispatch();
-    const { sound } = useAudio();
+    const { sound, unloadSound } = useAudio();
     const navigation = useNavigation();
     const { isPlaying, progress, duration, currentItem, selectedTime } = useSelector((state) => state.audio);
     const progressAnim = useRef(new Animated.Value(0)).current;
@@ -27,6 +29,10 @@ const FloatingPlayer = () => {
     const stopMeditation = async () => {
         if (sound) {
             try {
+                const status = await sound.getStatusAsync();
+                const listenedSeconds = Math.floor(status.positionMillis / 1000);
+                dispatch(addListeningTime({ listeningTime: listenedSeconds }));
+                
                 await sound.stopAsync();
                 await unloadSound();
                 dispatch(resetAudio());
@@ -35,7 +41,7 @@ const FloatingPlayer = () => {
             }
         }
     };
-    
+
     useEffect(() => {
         if (sound) {
             const interval = setInterval(async () => {
@@ -43,7 +49,6 @@ const FloatingPlayer = () => {
                 if (status.isLoaded) {
                     const currentProgress = status.positionMillis / (selectedTime * 60000);
                     dispatch(setProgress(currentProgress));
-
                 }
             }, 1000);
 
@@ -83,17 +88,17 @@ const FloatingPlayer = () => {
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row',justifyContent:'flex-end' }}>
-                    <TouchableOpacity onPress={togglePlayPause} >
+                <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                    <TouchableOpacity onPress={togglePlayPause}>
                         <FeatherIcon name={isPlaying ? 'pause' : 'play'} size={19} color="#000" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={stopMeditation}  style={{marginLeft:20}}>
+                    <TouchableOpacity onPress={stopMeditation} style={{ marginLeft: 20 }}>
                         <FeatherIcon name='x' size={19} color="#000" />
                     </TouchableOpacity>
                 </View>
             </View>
 
-            <View style={styles.progressContainer} >
+            <View style={styles.progressContainer}>
                 <Animated.View style={[styles.progressBar, {
                     width: progressAnim.interpolate({
                         inputRange: [0, 1],
@@ -101,7 +106,6 @@ const FloatingPlayer = () => {
                     })
                 }]} />
             </View>
-
         </View>
     );
 };

@@ -48,7 +48,7 @@ export default function AccountScreen({ navigation }) {
 
                 <View style={styles.accountMeditationHeader}>
                     <View style={styles.meditationHeader}>
-                        <Text style={styles.meditationHeaderText}>{user.userInfo.name}can</Text>
+                        <Text style={styles.meditationHeaderText}>{user.userInfo.name}</Text>
                         <Text style={styles.accountText}>Health</Text>
                     </View>
                     <View style={styles.logoutButton}>

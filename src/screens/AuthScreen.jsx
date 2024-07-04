@@ -106,16 +106,8 @@ export default function AuthScreen({ route, navigation }) {
             }
         ]
     };
-
     const handleIsValidEmail = (inputText) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const charsRegex = /[çğıöşüÇĞİÖŞÜ]/;
-
-        const hasTurkishChars = charsRegex.test(inputText);
-        if (hasTurkishChars) {
-            return false;
-        }
-
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const isValid = emailRegex.test(inputText);
         setEmail(inputText);
         return isValid;

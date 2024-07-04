@@ -44,7 +44,10 @@ export default function FavoritesScreen({ navigation }) {
               ) : (
                 <>
                   <Text style={styles.noFavoritesText}>No programs in your favorites at the moment.</Text>
-                  <Text style={styles.discoverText} onPress={() => navigation.navigate('Meditation ')}>Discover: Programs</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('Meditation ')} activeOpacity={0.8}>
+                  <Text style={styles.discoverText} >Discover: Programs</Text>
+
+                  </TouchableOpacity>
                 </>
               )}
             </View>
@@ -66,7 +69,10 @@ export default function FavoritesScreen({ navigation }) {
               ) : (
                 <>
                   <Text style={styles.noFavoritesText}>No articles in your favorites at the moment.</Text>
-                  <Text style={styles.discoverText} onPress={() => navigation.navigate('Meditation Article')}>Discover: Articles</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('Meditation Article')} activeOpacity={0.8}>
+                  <Text style={styles.discoverText} >Discover: Articles</Text>
+                  </TouchableOpacity>
+               
                 </>
               )}
             </View>

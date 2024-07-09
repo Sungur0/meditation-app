@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, TouchableOpacity, Text, Animated, Easing } from 'react-native';
+import { View, TouchableOpacity, Text, Animated, Easing, AppState } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +14,7 @@ const FloatingPlayer = () => {
     const navigation = useNavigation();
     const { isPlaying, progress, duration, currentItem, selectedTime } = useSelector((state) => state.audio);
     const progressAnim = useRef(new Animated.Value(0)).current;
+    const appState = useRef(AppState.currentState);
 
     const togglePlayPause = async () => {
         if (sound) {
@@ -43,6 +44,27 @@ const FloatingPlayer = () => {
     };
 
     useEffect(() => {
+        const subscription = AppState.addEventListener("change", handleAppStateChange);
+
+        return () => {
+            subscription.remove();
+        };
+    }, []);
+
+    const handleAppStateChange = async (nextAppState) => {
+        if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+            console.log("App has come to the foreground!");
+        } else if (nextAppState.match(/inactive|background/)) {
+            console.log("App has gone to the background!");
+            if (sound && isPlaying) {
+                await sound.pauseAsync();
+                dispatch(setIsPlaying(false));
+            }
+        }
+        appState.current = nextAppState;
+    };
+
+    useEffect(() => {
         if (sound) {
             const interval = setInterval(async () => {
                 const status = await sound.getStatusAsync();
@@ -61,7 +83,7 @@ const FloatingPlayer = () => {
         const seconds = Math.floor((millis % 60000) / 1000).toFixed(0);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
-
+    console.log(isPlaying)
     useEffect(() => {
         Animated.timing(progressAnim, {
             toValue: progress,

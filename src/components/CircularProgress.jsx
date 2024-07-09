@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, Easing } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
-const CircularProgress = ({ radius, strokeWidth, progress,  }) => {
+const CircularProgress = ({ radius, strokeWidth, progress }) => {
     const circumference = radius * 2 * Math.PI;
     const animatedValue = useRef(new Animated.Value(0)).current;
     const animatedCircleRef = useRef(null);
@@ -10,11 +10,11 @@ const CircularProgress = ({ radius, strokeWidth, progress,  }) => {
     useEffect(() => {
         Animated.timing(animatedValue, {
             toValue: progress,
-            duration: 500,
-            useNativeDriver: false, // Set to false to debug JS side performance
+            duration: 500, // Increase duration for smoother animation
+            easing: Easing.linear, // Use linear easing function
+            useNativeDriver: false, 
         }).start();
     }, [progress]);
-
     useEffect(() => {
         const listener = animatedValue.addListener((v) => {
             const strokeDashoffset = circumference - (circumference * v.value) / 100;
@@ -35,7 +35,7 @@ const CircularProgress = ({ radius, strokeWidth, progress,  }) => {
         <View>
             <Svg width={radius * 2} height={radius * 2}>
                 <Circle
-                    stroke="#ddd"
+                    stroke="rgba(255,255,255,.3)"
                     fill="transparent"
                     strokeWidth={strokeWidth}
                     cx={radius}

@@ -220,10 +220,11 @@ const styles = StyleSheet.create({
     },
     playOverlay: {
         position: 'absolute',
-        backgroundColor: 'rgba(255,255,255, 0.1);',
-        borderRadius: 150,
+        backgroundColor:'rgba(255,255,255,.001)',
+        borderRadius: '150',
         height: 190,
         width: 190,
+        overflow: 'hidden', 
         zIndex: 0,
     },
     playViewCon: {
@@ -232,9 +233,17 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150,
         borderRadius: 75,
-        backgroundColor: 'rgba(255,255,255, 0.5);',
         zIndex: 99,
-
+        overflow: 'hidden',
+    },
+    absolute: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        borderRadius: 75, 
+        backgroundColor:'rgba(255,255,255,.01)'
     },
     progressBar: {
         height: 10,

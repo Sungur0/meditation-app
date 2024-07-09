@@ -1,5 +1,5 @@
-import { View, Text, Image, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
-import React, { useState, useEffect, useRef } from 'react'
+import { View, Text, Image, TouchableOpacity, ImageBackground, ScrollView, AppState } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import styles from '../style';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -12,25 +12,33 @@ export default function ArticleDetail({ route, navigation }) {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
     const startTimeRef = useRef(null);
-    const isFavorite = user.favorites?.includes(item.id);
-    const [isFavorited, setIsFavorited] = useState(isFavorite);
-    const [hasCompletedArticle, setHasCompletedArticle] = useState(false); // Flag to track completion
-    const [isScrolledToBottom, setIsScrolledToBottom] = useState(false); // State to track scroll position
+    const appState = useRef(AppState.currentState);
+    const [isFavorited, setIsFavorited] = useState(user.userInfo.favorites.articles.includes(item.id));
+    const [hasCompletedArticle, setHasCompletedArticle] = useState(false);
+    const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
     useEffect(() => {
-        const isFavorite = user.userInfo.favorites.articles.includes(item.id);
-        setIsFavorited(isFavorite);
-    }, []);
-
-    useEffect(() => {
+        const subscription = AppState.addEventListener("change", handleAppStateChange);
         startTimeRef.current = Date.now();
 
         return () => {
+            subscription.remove();
             const endTime = Date.now();
             const timeSpent = endTime - startTimeRef.current;
             dispatch(addScreenTime(Math.floor(timeSpent / 1000)));
         };
     }, [dispatch]);
+
+    const handleAppStateChange = (nextAppState) => {
+        if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+            startTimeRef.current = Date.now();
+        } else if (nextAppState.match(/inactive|background/)) {
+            const endTime = Date.now();
+            const timeSpent = endTime - startTimeRef.current;
+            dispatch(addScreenTime(Math.floor(timeSpent / 1000)));
+        }
+        appState.current = nextAppState;
+    };
 
     const handleToggleFavorite = () => {
         if (isFavorited) {

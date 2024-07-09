@@ -7,6 +7,7 @@ import TimerPicker from '../components/TimePicker';
 import CircularProgress from '../components/CircularProgress';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
+import { BlurView } from 'expo-blur';
 import { addFavorite, removeFavorite, setCompletedSongs, addListeningTime } from '../redux/UserSlice';
 import { useAudio } from '../context/AudioContext';
 import {
@@ -206,9 +207,9 @@ export default function MeditationPlayer({ route, navigation }) {
             const listenedSeconds = Math.floor(status.positionMillis / 1000);
             dispatch(addListeningTime({ listeningTime: listenedSeconds }));
 
-            await sound.pauseAsync(); // Pause the sound
+            await sound.pauseAsync();
             await dispatch(setIsPlaying(false));
-            await sound.setPositionAsync(0); // Reset the playback position to 0
+            await sound.setPositionAsync(0);
         }
         dispatch(setSelectedTime(time));
         dispatch(setDuration(time * 60000));
@@ -231,8 +232,12 @@ export default function MeditationPlayer({ route, navigation }) {
                         </TouchableOpacity >
                     </View>
                     <View style={styles.playView}>
-                        <View style={styles.playOverlay} ></View>
+                    <BlurView intensity={40} style={styles.playOverlay} />
+
+
+                        {/* <View style={styles.playOverlay} ></View> */}
                         <TouchableOpacity activeOpacity={0.8} onPress={toggleMeditation} style={styles.playViewCon}>
+                            <BlurView intensity={40} style={styles.absolute} />
                             <FeatherIcon name={isPlaying ? 'pause' : 'play'} size={50} color="#EC8222" />
                         </TouchableOpacity>
                         {isPlaying && (

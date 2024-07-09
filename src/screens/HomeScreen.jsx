@@ -5,11 +5,13 @@ import styles from '../style';
 import { useData } from '../context/DataContext';
 // import DeviceInfo from 'react-native-device-info';
 import FloatingPlayer from '../components/FloatingPlayer';
+// import TrackPlayer from 'react-native-track-player';
 
 export default function HomeScreen({ navigation }) {
   // const uniqueId = DeviceInfo.getUniqueIdSync();
-  const { data } = useData();
   // console.log(uniqueId)
+
+  const { data } = useData();
 
   
   const user = useSelector((state) => state.user);

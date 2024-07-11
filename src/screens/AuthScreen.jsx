@@ -1,38 +1,57 @@
-import { View, TextInput, Text, Alert, Animated, TouchableWithoutFeedback, TouchableOpacity,Easing } from 'react-native';
+import { View, TextInput, Text, Alert, Animated, TouchableWithoutFeedback, TouchableOpacity, Easing } from 'react-native';
 import React, { useState, useRef } from 'react';
 import { login, signUp } from '../redux/UserSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../style';
+import { MD5 } from 'crypto-js';
+import PhoneInput from 'react-native-international-phone-number'
+
+
 
 export default function AuthScreen({ route, navigation }) {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('')
     const [type, setType] = useState(route.params.type)
-
+    const [tel, setTel] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [isFocused, setIsFocused] = useState(false);
+    const animation = useRef(new Animated.Value(0)).current;
+    const [isLogin, setIsLogin] = useState(true);
+    const [isPasswordValid, setIsPasswordValid] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isPasswordMatched, setIsPasswordMatched] = useState(false);
     const [criteria, setCriteria] = useState({
         lengthCriteria: false,
         upperCaseCriteria: false,
         lowerCaseCriteria: false,
         numberCriteria: false,
-        specialCharCriteria: false
     });
 
     const dispatch = useDispatch();
 
-    const [isLogin, setIsLogin] = useState(true);
 
     const handleSubmit = () => {
+        if (!name || !email || !password || !tel) {
+            Alert.alert('Error', 'All fields must be filled.');
+            return;
+        }
+
         if (!handleIsValidEmail(email)) {
             Alert.alert('Error', 'Enter a valid email address.');
             return;
         }
-        const { lengthCriteria, upperCaseCriteria, lowerCaseCriteria, numberCriteria, specialCharCriteria } = criteria;
+        if (password !== confirmPassword) {
+            Alert.alert('Error', 'Passwords do not match.');
+            return;
+        }
+        const { lengthCriteria, upperCaseCriteria, lowerCaseCriteria, numberCriteria } = criteria;
 
-        if (!lengthCriteria || !upperCaseCriteria || !lowerCaseCriteria || !numberCriteria || !specialCharCriteria) {
+        if (!lengthCriteria || !upperCaseCriteria || !lowerCaseCriteria || !numberCriteria) {
             Alert.alert('Error', 'Password does not meet the required criteria.');
             return;
         }
+
         if (!isLogin) {
             dispatch(login({ userInfo: { email, password } }));
             navigation.navigate('App');
@@ -42,6 +61,8 @@ export default function AuthScreen({ route, navigation }) {
                     email,
                     name,
                     password,
+                    tel,
+                    country: selectedCountry
                 }
             }));
             navigation.navigate('App');
@@ -53,27 +74,37 @@ export default function AuthScreen({ route, navigation }) {
         const upperCaseCriteria = /[A-Z]/.test(inputText);
         const lowerCaseCriteria = /[a-z]/.test(inputText);
         const numberCriteria = /\d/.test(inputText);
-        const specialCharCriteria = /[@$!%*?&.]/.test(inputText);
-
         return {
             lengthCriteria,
             upperCaseCriteria,
             lowerCaseCriteria,
             numberCriteria,
-            specialCharCriteria
         };
     };
 
-    const [isFocused, setIsFocused] = useState(false);
-    const animation = useRef(new Animated.Value(0)).current;
+
 
     const handlePasswordChange = (inputText) => {
         const validationResults = handleIsValidPassword(inputText);
+        const { lengthCriteria, upperCaseCriteria, lowerCaseCriteria, numberCriteria } = validationResults;
+
         setPassword(inputText);
         setCriteria(validationResults);
-    };
 
- 
+        setIsPasswordValid(lengthCriteria && upperCaseCriteria && lowerCaseCriteria && numberCriteria);
+    };
+    const handleConfirmPasswordChange = (inputText) => {
+        setConfirmPassword(inputText);
+        setIsPasswordMatched(inputText === password);
+    };
+    function handleInputValue(phoneNumber) {
+        setTel(phoneNumber);
+    }
+
+    function handleSelectedCountry(country) {
+        setSelectedCountry(country);
+    }
+
     const handleFocus = () => {
         setIsFocused(true);
         Animated.timing(animation, {
@@ -127,12 +158,34 @@ export default function AuthScreen({ route, navigation }) {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <View style={styles.inputView}>
                     {type === 'register' && (
-                        <TextInput
-                            placeholder="Name"
-                            value={name}
-                            onChangeText={setName}
-                            style={styles.authInput}
-                        />
+                        <>
+                            <TextInput
+                                placeholder="Name"
+                                value={name}
+                                onChangeText={setName}
+                                style={styles.authInput}
+                            />
+
+                            <PhoneInput
+                                value={tel}
+                                onChangePhoneNumber={handleInputValue}
+                                selectedCountry={selectedCountry}
+                                onChangeSelectedCountry={handleSelectedCountry}
+                                defaultCountry='US'
+                                placeholder='Phone Number'
+                                phoneInputStyles={{
+                                    container: {
+                                        height: 45,
+                                        marginVertical: 5
+                                    },
+                                    input: {
+                                        fontFamily: 'Montserrat-Regular',
+                                        fontSize: 14
+                                    }
+                                }}
+                            />
+                        </>
+
                     )}
                     <TextInput
                         placeholder="Email"
@@ -140,14 +193,13 @@ export default function AuthScreen({ route, navigation }) {
                         onChangeText={setEmail}
                         style={styles.authInput}
                     />
-          
                     <TouchableWithoutFeedback onPress={() => handleFocus()}>
                         <TextInput
                             placeholder="Password"
                             secureTextEntry
                             value={password}
                             onChangeText={handlePasswordChange}
-                            style={styles.authInput}
+                            style={[styles.authInput, isPasswordValid && styles.validPassword]}
                             onFocus={handleFocus}
                             onBlur={handleBlur}
                         />
@@ -158,9 +210,16 @@ export default function AuthScreen({ route, navigation }) {
                             <Text style={criteria.upperCaseCriteria ? styles.valid : styles.invalid}>At least one uppercase letter</Text>
                             <Text style={criteria.lowerCaseCriteria ? styles.valid : styles.invalid}>At least one lowercase letter</Text>
                             <Text style={criteria.numberCriteria ? styles.valid : styles.invalid}>At least one number</Text>
-                            <Text style={criteria.specialCharCriteria ? styles.valid : styles.invalid}>At least one special character (@$!%*?&)</Text>
                         </Animated.View>
                     )}
+                    <TextInput
+                        placeholder="Confirm Password"
+                        secureTextEntry
+                        value={confirmPassword}
+                        onChangeText={handleConfirmPasswordChange}
+                        style={[styles.authInput, ]}
+                        onBlur={handleBlur}
+                    />
                 </View>
 
                 <View style={styles.buttonView}>

@@ -84,6 +84,7 @@ export default function MeditationPlayer({ route, navigation }) {
                     const status = await sound.getStatusAsync();
                     const listenedSeconds = Math.floor(status.positionMillis / 1000);
                     dispatch(addListeningTime({ listeningTime: listenedSeconds }));
+                    console.log(listenedSeconds)
                     await stopMeditation();
                 }
                 dispatch(resetAudio());
@@ -100,7 +101,7 @@ export default function MeditationPlayer({ route, navigation }) {
                     dispatch(setProgress(currentProgress));
                     if (status.didJustFinish) {
                         dispatch(setIsPlaying(false));
-                        sound.setPositionAsync(0); // Reset the playback position when the sound finishes
+                        sound.setPositionAsync(0); 
                     }
                 }
             };
@@ -181,9 +182,7 @@ export default function MeditationPlayer({ route, navigation }) {
         } else {
             if (sound) {
                 const status = await sound.getStatusAsync();
-                console.log(status)
                 const listenedSeconds = Math.floor(status.positionMillis / 1000);
-                console.log(listenedSeconds)
                 dispatch(addListeningTime({ listeningTime: listenedSeconds }));
             }
             await stopMeditation();
@@ -214,7 +213,6 @@ export default function MeditationPlayer({ route, navigation }) {
         dispatch(setSelectedTime(time));
         dispatch(setDuration(time * 60000));
     };
-    console.log(isPlaying)
     return (
 
         <View style={{ flex: 1 }}>

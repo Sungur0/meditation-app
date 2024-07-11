@@ -25,6 +25,7 @@ export default function HomeScreen({ navigation }) {
       <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} showsVerticalScrollIndicator={false}>
         <View style={styles.meditationHeader}>
           <Text style={styles.meditationHeaderText}>Choose your meditation program</Text>
+          
         </View>
         <View style={styles.meditationCardContainer}>
           {data.categories.map((item, i) => (

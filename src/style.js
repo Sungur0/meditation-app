@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         borderColor: '#ababab',
         marginVertical: 5,
+        borderRadius:5
     },
     meditationHeader: {
         width: 250,
@@ -520,7 +521,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular'
     },
     criteriaContainer: {
-        marginTop: 10,
+        paddingHorizontal:10
     },
     invalid: {
         fontFamily: 'Montserrat-Regular',
@@ -528,7 +529,8 @@ const styles = StyleSheet.create({
     },
     valid: {
         fontFamily: 'Montserrat-Regular',
-        color: 'green'
+        color: 'green',
+        display:'none'
     },
     favoritesVerticalContainer: {
         flexDirection: 'row',
@@ -559,8 +561,13 @@ const styles = StyleSheet.create({
     },
     discoverText: {
         fontFamily: 'Montserrat-Medium',
-
-    }
+    },
+    invalidInput: {
+        borderColor: 'red',
+    },
+    validPassword: {
+        borderColor: 'green',
+    },
 
 })
 

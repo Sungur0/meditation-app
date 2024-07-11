@@ -36,6 +36,7 @@ export default function ArticleDetail({ route, navigation }) {
             const endTime = Date.now();
             const timeSpent = endTime - startTimeRef.current;
             dispatch(addScreenTime(Math.floor(timeSpent / 1000)));
+            console.log(Math.floor(timeSpent / 1000))
         }
         appState.current = nextAppState;
     };

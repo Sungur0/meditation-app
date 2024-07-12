@@ -6,6 +6,7 @@ import { logout } from '../redux/UserSlice';
 import { LinearGradient } from 'expo-linear-gradient';
 import FloatingPlayer from '../components/FloatingPlayer';
 import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const formatTime = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -31,24 +32,34 @@ const formatTime = (totalSeconds) => {
 export default function AccountScreen({ navigation }) {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-    const completedMeditations = user.userInfo.musicStats.completedSongs;
-    const completedArticles = user.userInfo.articleStats.completedArticles;
-    const totalListeningTime = user.userInfo.musicStats.totalListeningTime;
-    const totalArticleTime = user.userInfo.articleStats.timeSpent;
+    const completedMeditations = user.userInfo.userdata_meditations;
+    const completedArticles = user.userInfo.userdata_articles;
+    const totalListeningTime = user.userInfo.userdata_meditationstime;
+    const totalArticleTime = user.userInfo.userdata_articlestime;
     const formattedListeningTime = formatTime(totalListeningTime);
     const formattedArticleTime = formatTime(totalArticleTime);
 
-    const handleLogout = () => {
-        dispatch(logout());
-        navigation.navigate('Splash')
-    };
+
+    const handleLogout = async () => {
+        try {
+          await AsyncStorage.removeItem('userData');
+    
+          dispatch(logout());
+    
+          navigation.navigate('Splash')
+
+        } catch (error) {
+          console.log('Oturum kapatılırken bir hata oluştu:', error);
+        }
+      };
+    
     return (
         <>
             <ScrollView style={{ backgroundColor: '#fff', flex: 1, }} showsVerticalScrollIndicator={false} >
 
                 <View style={styles.accountMeditationHeader}>
                     <View style={styles.meditationHeader}>
-                        <Text style={styles.meditationHeaderText}>{user.userInfo.name}</Text>
+                        <Text style={styles.meditationHeaderText}>{user.userInfo.userdata_name}</Text>
                         <Text style={styles.accountText}>Health</Text>
                     </View>
                     <View style={styles.logoutButton}>

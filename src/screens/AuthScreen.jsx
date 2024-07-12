@@ -1,12 +1,46 @@
 import { View, TextInput, Text, Alert, Animated, TouchableWithoutFeedback, TouchableOpacity, Easing } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { login, signUp } from '../redux/UserSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../style';
 import { MD5 } from 'crypto-js';
 import PhoneInput from 'react-native-international-phone-number'
+import { API_HASH } from '../constant'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
+// useEffect(() => {
+
+
+//     const checkLoggedIn = async () => {
+//         try {
+//             const userData = await AsyncStorage.getItem('userData');
+
+//             const updateUserData = JSON.parse(userData);
+
+//             const response = await fetch('https://lafagency.com/cocktail/admin/Api/login', {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                 },
+//                 body: JSON.stringify(updateUserData),
+//             });
+
+//             const userDataResponse = await response.json();
+
+//             if (userDataResponse.message == 1) {
+//                 console.log('Üye giriş yaptı');
+//                 dispatch(login({ userInfo: userDataResponse.data }));
+//             } else {
+//             }
+
+//         } catch (error) {
+//             console.log('Oturum bilgileri çekilirken bir hata oluştu:', error);
+//         }
+//     };
+
+//     checkLoggedIn()
+// }, [deviceId]);
 
 export default function AuthScreen({ route, navigation }) {
     const [name, setName] = useState('');
@@ -30,19 +64,25 @@ export default function AuthScreen({ route, navigation }) {
 
     const dispatch = useDispatch();
 
-
-    const handleSubmit = () => {
-        if (!name || !email || !password || !tel) {
-            Alert.alert('Error', 'All fields must be filled.');
-            return;
+    useEffect(() => {
+        if (type === 'login') {
+            setIsLogin(false);
+        } else if (type === 'register') {
+            setIsLogin(true);
         }
+    }, [type]);
+
+
+    const phoneNumber = `${selectedCountry?.callingCode} ${tel}`;
+
+    const handleSubmit = async () => {
+        // if (!name || !email || !password || !tel) {
+        //     Alert.alert('Error', 'All fields must be filled.');
+        //     return;
+        // }
 
         if (!handleIsValidEmail(email)) {
             Alert.alert('Error', 'Enter a valid email address.');
-            return;
-        }
-        if (password !== confirmPassword) {
-            Alert.alert('Error', 'Passwords do not match.');
             return;
         }
         const { lengthCriteria, upperCaseCriteria, lowerCaseCriteria, numberCriteria } = criteria;
@@ -52,20 +92,71 @@ export default function AuthScreen({ route, navigation }) {
             return;
         }
 
-        if (!isLogin) {
-            dispatch(login({ userInfo: { email, password } }));
-            navigation.navigate('App');
-        } else {
-            dispatch(signUp({
-                userInfo: {
+        // if (password !== confirmPassword) {
+        //     Alert.alert('Error', 'Passwords do not match.');
+        //     return;
+        // }
+
+        try {
+            if (!isLogin) {
+                const requestData = {
                     email,
-                    name,
-                    password,
-                    tel,
-                    country: selectedCountry
+                    password: MD5(password).toString(),
+                };
+
+                const response = await fetch('https://lafagency.com/meditation/admin/Api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData),
+                });
+                const responseData = await response.json();
+
+                if (responseData.message == 1) {
+                    await AsyncStorage.setItem('userData', JSON.stringify({ email, password: MD5(password).toString(), }));
+                    console.log('Üye giriş yaptı');
+                    dispatch(login({ userInfo: responseData.data }));
+                    navigation.navigate('App');
+                } else {
+                    console.error(responseData.message);
+                    Alert.alert('Error', responseData.message);
                 }
-            }));
-            navigation.navigate('App');
+            } else {
+                const requestData = {
+                    name,
+                    email,
+                    password: MD5(password).toString(),
+                    tel: phoneNumber,
+                    hash: API_HASH
+                };
+
+                const response = await fetch('https://lafagency.com/meditation/admin/Api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData),
+                });
+
+                const responseData = await response.json();
+
+                console.log(responseData);
+                if (responseData.message == 1) {
+                    console.log('Üye başarıyla oluşturuldu');
+
+                    await AsyncStorage.setItem('userData', JSON.stringify({ email, password: MD5(password).toString(), hash: API_HASH }));
+
+                    dispatch(signUp({ userInfo: responseData.data }));
+                    navigation.navigate('App');
+                } else {
+                    console.log(responseData.message);
+                    Alert.alert('Error', responseData.message);
+                }
+            }
+        } catch (error) {
+            console.log('İstek gönderilirken bir hata oluştu:', error);
+            Alert.alert('Error', 'İstek gönderilirken bir hata oluştu.');
         }
     };
 
@@ -144,13 +235,22 @@ export default function AuthScreen({ route, navigation }) {
         return isValid;
     };
 
+    const handleRegisterType = () => {
+        setIsLogin(true)
+        setType('register')
+    }
+    const handleLoginType = () => {
+        setIsLogin(false)
+        setType('login')
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: '#fff', }}>
             <View style={styles.authScreenHeader}>
-                <TouchableOpacity onPress={() => setType('register')}>
+                <TouchableOpacity onPress={handleRegisterType}>
                     <Text style={type === 'register' ? styles.activeHeaderText : styles.inactiveHeaderText}>Register</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setType('login')}>
+                <TouchableOpacity onPress={handleLoginType}>
                     <Text style={type === 'login' ? styles.activeHeaderText : styles.inactiveHeaderText}>Log In</Text>
                 </TouchableOpacity>
             </View>
@@ -184,6 +284,7 @@ export default function AuthScreen({ route, navigation }) {
                                     }
                                 }}
                             />
+                          
                         </>
 
                     )}
@@ -212,14 +313,20 @@ export default function AuthScreen({ route, navigation }) {
                             <Text style={criteria.numberCriteria ? styles.valid : styles.invalid}>At least one number</Text>
                         </Animated.View>
                     )}
-                    <TextInput
-                        placeholder="Confirm Password"
-                        secureTextEntry
-                        value={confirmPassword}
-                        onChangeText={handleConfirmPasswordChange}
-                        style={[styles.authInput, ]}
-                        onBlur={handleBlur}
-                    />
+
+                    {type === 'register' && (
+                        <>
+                            
+                            <TextInput
+                                placeholder="Confirm Password"
+                                secureTextEntry
+                                value={confirmPassword}
+                                onChangeText={handleConfirmPasswordChange}
+                                style={[styles.authInput, , isPasswordMatched && styles.validPassword]}
+                            />
+                        </>
+
+                    )}
                 </View>
 
                 <View style={styles.buttonView}>
@@ -227,9 +334,9 @@ export default function AuthScreen({ route, navigation }) {
                         <Text style={styles.buttonText}>{type === 'login' ? 'Login' : 'Register'}</Text>
                     </TouchableOpacity>
                 </View>
-                {type === 'login' && (
+                {/* {type === 'login' && (
                     <Text style={styles.passwordText}>Forgot your password?</Text>
-                )}
+                )} */}
             </View>
         </View>
 

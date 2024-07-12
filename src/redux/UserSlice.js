@@ -31,18 +31,18 @@ const userSlice = createSlice({
             state.isLoggedIn = true;
             state.userInfo = {
                 ...action.payload.userInfo,
-                favorites: {
-                    articles: [],
-                    programs: [],
-                },
-                musicStats: {
-                    completedSongs: 0,
-                    totalListeningTime: 0,
-                },
-                articleStats: {
-                    timeSpent: 0,
-                    completedArticles: 0,
-                },
+                // favorites: {
+                //     articles: [],
+                //     programs: [],
+                // },
+                // musicStats: {
+                //     completedSongs: 0,
+                //     totalListeningTime: 0,
+                // },
+                // articleStats: {
+                //     timeSpent: 0,
+                //     completedArticles: 0,
+                // },
             };
             console.log('Signed up user:', action.payload.userInfo);
         },

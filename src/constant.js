@@ -1,0 +1,1 @@
+export const API_HASH = '5986298bec614ba4da4e5887755ae39c';

@@ -48,38 +48,73 @@ const userSlice = createSlice({
         },
         addFavorite: (state, action) => {
             const { id, type } = action.payload;
-            if (type === 'article' && !state.userInfo.favorites.articles.includes(id)) {
-                state.userInfo.favorites.articles.push(id);
-            } else if (type === 'program' && !state.userInfo.favorites.programs.includes(id)) {
-                state.userInfo.favorites.programs.push(id);
+
+            let favoritesArray;
+            if (type === 'article') {
+                try {
+                    favoritesArray = JSON.parse(state.userInfo.userdata_favorites_article || '[]');
+                } catch (e) {
+                    favoritesArray = [];
+                }
+
+                if (!favoritesArray.includes(id.toString())) {
+                    favoritesArray.push(id.toString());
+                    state.userInfo.userdata_favorites_article = JSON.stringify(favoritesArray);
+                }
+            } else if (type === 'program') {
+                try {
+                    favoritesArray = JSON.parse(state.userInfo.userdata_favorites_meditation || '[]');
+                } catch (e) {
+                    favoritesArray = [];
+                }
+
+                if (!favoritesArray.includes(id.toString())) {
+                    favoritesArray.push(id.toString());
+                    state.userInfo.userdata_favorites_meditation = JSON.stringify(favoritesArray);
+                }
             }
         },
+
         removeFavorite: (state, action) => {
             const { id, type } = action.payload;
+
+            let favoritesArray;
             if (type === 'article') {
-                state.userInfo.favorites.articles = state.userInfo.favorites.articles.filter(
-                    (articleId) => articleId !== id
-                );
+                try {
+                    favoritesArray = JSON.parse(state.userInfo.userdata_favorites_article || '[]');
+                } catch (e) {
+                    favoritesArray = [];
+                }
+
+                favoritesArray = favoritesArray.filter(articleId => articleId !== id.toString());
+                state.userInfo.userdata_favorites_article = JSON.stringify(favoritesArray);
             } else if (type === 'program') {
-                state.userInfo.favorites.programs = state.userInfo.favorites.programs.filter(
-                    (programId) => programId !== id
-                );
+                try {
+                    favoritesArray = JSON.parse(state.userInfo.userdata_favorites_meditation || '[]');
+                } catch (e) {
+                    favoritesArray = [];
+                }
+
+                favoritesArray = favoritesArray.filter(programId => programId !== id.toString());
+                state.userInfo.userdata_favorites_meditation = JSON.stringify(favoritesArray);
             }
         },
         setCompletedSongs(state) {
-            state.userInfo.musicStats.completedSongs += 1;
+            state.userInfo.userdata_meditations = (parseInt(state.userInfo.userdata_meditations, 10) + 1)
+
         },
         addListeningTime(state, action) {
-            state.userInfo.musicStats.totalListeningTime += action.payload.listeningTime;
+            state.userInfo.userdata_meditationstime = parseInt(state.userInfo.userdata_meditationstime, 10) + parseInt(action.payload.listeningTime, 10);
         },
         addScreenTime: (state, action) => {
-            state.userInfo.articleStats.timeSpent += action.payload;
+            state.userInfo.userdata_articlestime = parseInt(state.userInfo.userdata_articlestime, 10) + parseInt(action.payload, 10);
+
         },
         setCompletedArticle(state) {
-            state.userInfo.articleStats.completedArticles += 1;
+            state.userInfo.userdata_articles = (parseInt(state.userInfo.userdata_articles, 10) + 1)
         },
     },
 });
 
-export const { login, logout, signUp, addFavorite, removeFavorite, setCompletedSongs, addListeningTime, addScreenTime ,setCompletedArticle} = userSlice.actions;
+export const { login, logout, signUp, addFavorite, removeFavorite, setCompletedSongs, addListeningTime, addScreenTime, setCompletedArticle } = userSlice.actions;
 export default userSlice.reducer;

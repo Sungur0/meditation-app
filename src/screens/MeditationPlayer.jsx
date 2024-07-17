@@ -19,6 +19,7 @@ import {
     resetAudio,
     setCurrentItem
 } from '../redux/audioSlice';
+import { API_HASH } from '../constant'
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 // import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
@@ -28,10 +29,9 @@ export default function MeditationPlayer({ route, navigation }) {
     const { isPlaying, progress, duration, selectedTime, currentItem } = useSelector((state) => state.audio);
     const { sound, loadSound, unloadSound } = useAudio();
     const intervalRef = useRef(null);
-
     const user = useSelector((state) => state.user);
-    const isFavorite = user.userInfo.favorites.programs.includes(item.id);
-    const [isFavorited, setIsFavorited] = useState(isFavorite);
+    // const isFavorite = user.userInfo.favorites.programs.includes(item.id);
+    const [isFavorited, setIsFavorited] = useState(false);
     const [bgMusic, setBgMusic] = useState(false)
 
     useEffect(() => {
@@ -39,16 +39,68 @@ export default function MeditationPlayer({ route, navigation }) {
     }, [dispatch]);
 
     useEffect(() => {
-        setIsFavorited(isFavorite);
-    }, [isFavorite]);
+        let favoritesArray = [];
 
-    const handleToggleFavorite = () => {
-        if (isFavorited) {
-            dispatch(removeFavorite({ id: item.id, type: 'program' }));
-            setIsFavorited(false);
-        } else {
-            dispatch(addFavorite({ id: item.id, type: 'program' }));
+        try {
+            favoritesArray = JSON.parse(user.userInfo.userdata_favorites_meditation || '[]');
+        } catch (e) {
+            favoritesArray = [];
+        }
+
+        if (favoritesArray.includes(item.id.toString())) {
             setIsFavorited(true);
+        }
+    }, [user.userInfo.userdata_favorites_article, item.id]);
+
+    const handleToggleFavorite = async () => {
+        try {
+            let jsonString = user.userInfo.userdata_favorites_meditation;
+
+            if (jsonString == null || jsonString === '') {
+                jsonString = '[]';
+            }
+
+            let favoritesArray = JSON.parse(jsonString);
+
+            const apiUrl = 'https://lafagency.com/meditation/admin/Api/updatefavoritesmeditation';
+
+            let updatedFavorites;
+
+            if (isFavorited) {
+                favoritesArray = favoritesArray.filter(id => id !== item.id.toString());
+                updatedFavorites = favoritesArray;
+                dispatch(removeFavorite({ id: item.id, type: 'program' }));
+                setIsFavorited(false);
+            } else {
+                if (!favoritesArray.includes(item.id.toString())) {
+                    updatedFavorites = [...favoritesArray, item.id.toString()];
+                    favoritesArray.push(item.id.toString());
+                    dispatch(addFavorite({ id: item.id, type: 'program' }));
+                    setIsFavorited(true);
+                }
+            }
+
+            const userData = {
+                userdata_favorites_meditation: JSON.stringify(updatedFavorites),
+                hash: API_HASH,
+                userdata_id: user.userInfo.userdata_id,
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update favorites');
+            }
+
+            console.log('Favorites updated successfully');
+        } catch (error) {
+            console.error('Error updating favorites:', error);
         }
     };
     const [translateY] = useState(new Animated.Value(0));
@@ -84,8 +136,34 @@ export default function MeditationPlayer({ route, navigation }) {
                     const status = await sound.getStatusAsync();
                     const listenedSeconds = Math.floor(status.positionMillis / 1000);
                     dispatch(addListeningTime({ listeningTime: listenedSeconds }));
-                    console.log(listenedSeconds)
                     await stopMeditation();
+                    try {
+                        const updatedListeningTime = parseInt(user.userInfo.userdata_meditationstime, 10) + listenedSeconds
+
+                        const listeningTimeRequestData = {
+                            hash: API_HASH,
+                            userdata_id: user.userInfo.userdata_id,
+                            userdata_meditationstime: updatedListeningTime
+                        };
+
+                        const listeningTimeResponse = await fetch('https://lafagency.com/meditation/admin/Api/updatemeditationstimedata', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(listeningTimeRequestData)
+                        });
+
+                        if (!listeningTimeResponse.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        const listeningTimeData = await listeningTimeResponse.json();
+                        console.log(listeningTimeData);
+                        console.log('Success:', listeningTimeData);
+                    } catch (error) {
+                        console.error('Error updating listening time:', error);
+                    }
                 }
                 dispatch(resetAudio());
             }
@@ -101,7 +179,7 @@ export default function MeditationPlayer({ route, navigation }) {
                     dispatch(setProgress(currentProgress));
                     if (status.didJustFinish) {
                         dispatch(setIsPlaying(false));
-                        sound.setPositionAsync(0); 
+                        sound.setPositionAsync(0);
                     }
                 }
             };
@@ -115,14 +193,69 @@ export default function MeditationPlayer({ route, navigation }) {
 
     useEffect(() => {
         if (isPlaying && selectedTime > 0) {
-            intervalRef.current = setInterval(() => {
-                sound.getStatusAsync().then((status) => {
-                    if (status.positionMillis >= selectedTime * 60000) {
-                        dispatch(setCompletedSongs());
-                        dispatch(addListeningTime({ listeningTime: selectedTime * 60 }));
-                        stopMeditation();
+            intervalRef.current = setInterval(async () => {
+                const status = await sound.getStatusAsync();
+                if (status.positionMillis >= selectedTime * 60000) {
+                    dispatch(setCompletedSongs());
+                    dispatch(addListeningTime({ listeningTime: selectedTime * 60 }));
+                    stopMeditation();
+
+                    try {
+                        const updatedMeditationCount = parseInt(user.userInfo.userdata_meditations, 10) + 1;
+
+                        const meditationRequestData = {
+                            hash: API_HASH,
+                            userdata_id: user.userInfo.userdata_id,
+                            userdata_meditations: updatedMeditationCount
+                        };
+
+                        const meditationResponse = await fetch('https://lafagency.com/meditation/admin/Api/updatemeditationdata', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(meditationRequestData)
+                        });
+
+                        if (!meditationResponse.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        const meditationData = await meditationResponse.json();
+                        console.log(meditationData);
+                        console.log('Success:', meditationData);
+                    } catch (error) {
+                        console.error('Error updating meditation data:', error);
                     }
-                });
+
+                    try {
+                        const updatedListeningTime = parseInt(user.userInfo.userdata_meditationstime, 10) + (selectedTime * 60);
+
+                        const listeningTimeRequestData = {
+                            hash: API_HASH,
+                            userdata_id: user.userInfo.userdata_id,
+                            userdata_meditationstime: updatedListeningTime
+                        };
+
+                        const listeningTimeResponse = await fetch('https://lafagency.com/meditation/admin/Api/updatemeditationstimedata', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(listeningTimeRequestData)
+                        });
+
+                        if (!listeningTimeResponse.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        const listeningTimeData = await listeningTimeResponse.json();
+                        console.log(listeningTimeData);
+                        console.log('Success:', listeningTimeData);
+                    } catch (error) {
+                        console.error('Error updating listening time:', error);
+                    }
+                }
             }, 1000);
         } else {
             if (intervalRef.current) {
@@ -226,11 +359,11 @@ export default function MeditationPlayer({ route, navigation }) {
                             <Icon name='arrow-back-outline' size={24} color="#fff" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleToggleFavorite} activeOpacity={0.9}>
-                            <Icon name={isFavorited ? 'heart-sharp' : 'heart-outline'} size={24} color="#fff" />
+                        <Icon name={isFavorited ? 'heart-sharp' : 'heart-outline'} size={24} color="#fff" />
                         </TouchableOpacity >
                     </View>
                     <View style={styles.playView}>
-                    <BlurView intensity={40} style={styles.playOverlay} />
+                        <BlurView intensity={40} style={styles.playOverlay} />
 
 
                         {/* <View style={styles.playOverlay} ></View> */}

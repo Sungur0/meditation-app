@@ -7,6 +7,8 @@ import { setIsPlaying, setProgress, resetAudio } from '../redux/audioSlice';
 import { addListeningTime } from '../redux/UserSlice';
 import { useAudio } from '../context/AudioContext';
 import styles from '../style';
+import { API_HASH } from '../constant'
+
 
 const FloatingPlayer = () => {
     const dispatch = useDispatch();
@@ -15,6 +17,7 @@ const FloatingPlayer = () => {
     const { isPlaying, progress, duration, currentItem, selectedTime } = useSelector((state) => state.audio);
     const progressAnim = useRef(new Animated.Value(0)).current;
     const appState = useRef(AppState.currentState);
+    const user = useSelector((state) => state.user);
 
     const togglePlayPause = async () => {
         if (sound) {
@@ -37,6 +40,35 @@ const FloatingPlayer = () => {
                 await sound.stopAsync();
                 await unloadSound();
                 dispatch(resetAudio());
+
+                try {
+                    const updatedListeningTime = parseInt(user.userInfo.userdata_meditationstime, 10) + listenedSeconds
+
+                    const listeningTimeRequestData = {
+                        hash: API_HASH,
+                        userdata_id: user.userInfo.userdata_id,
+                        userdata_meditationstime: updatedListeningTime
+                    };
+
+                    const listeningTimeResponse = await fetch('https://lafagency.com/meditation/admin/Api/updatemeditationstimedata', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(listeningTimeRequestData)
+                    });
+
+                    if (!listeningTimeResponse.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const listeningTimeData = await listeningTimeResponse.json();
+                    console.log(listeningTimeData);
+                    console.log('Success:', listeningTimeData);
+                } catch (error) {
+                    console.error('Error updating listening time:', error);
+                }
+                
             } catch (error) {
                 console.log('Error stopping sound: ', error);
             }
@@ -83,7 +115,6 @@ const FloatingPlayer = () => {
         const seconds = Math.floor((millis % 60000) / 1000).toFixed(0);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
-    console.log(isPlaying)
     useEffect(() => {
         Animated.timing(progressAnim, {
             toValue: progress,

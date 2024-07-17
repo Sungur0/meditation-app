@@ -8,11 +8,13 @@ import FloatingPlayer from '../components/FloatingPlayer';
 
 export default function FavoritesScreen({ navigation }) {
   const favorites = useSelector((state) => state.user.userInfo.favorites);
-  const { data } = useData();
-  const favoriteArticles = data.articles.filter(article => favorites.articles.includes(article.id));
-  const favoritePrograms = data.programs.filter(program => favorites.programs.includes(program.id));
+  const user = useSelector((state) => state.user);
 
-  console.log(favoriteArticles)
+  const { data } = useData();
+  const favoriteArticles = data.articles.filter(article => user.userInfo.userdata_favorites_article.includes(article.id));
+  const favoritePrograms = data.programs.filter(program => user.userInfo.userdata_favorites_meditation.includes(program.id));
+
+  console.log(favoriteArticles.length)
 
   const goToMeditationProgram = (item) => {
     navigation.navigate('MeditationPlayer', { item });

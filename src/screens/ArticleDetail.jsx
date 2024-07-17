@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFavorite, removeFavorite, addScreenTime, setCompletedArticle } from '../redux/UserSlice';
 import FloatingPlayer from '../components/FloatingPlayer';
+import { API_HASH } from '../constant'
 
 export default function ArticleDetail({ route, navigation }) {
     const { item } = route.params;
@@ -13,9 +14,9 @@ export default function ArticleDetail({ route, navigation }) {
     const user = useSelector((state) => state.user);
     const startTimeRef = useRef(null);
     const appState = useRef(AppState.currentState);
-    const [isFavorited, setIsFavorited] = useState(user.userInfo.favorites.articles.includes(item.id));
+    const [isFavorited, setIsFavorited] = useState(false);
     const [hasCompletedArticle, setHasCompletedArticle] = useState(false);
-    const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
+    // const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
     useEffect(() => {
         const subscription = AppState.addEventListener("change", handleAppStateChange);
@@ -26,36 +27,147 @@ export default function ArticleDetail({ route, navigation }) {
             const endTime = Date.now();
             const timeSpent = endTime - startTimeRef.current;
             dispatch(addScreenTime(Math.floor(timeSpent / 1000)));
+            console.log('Time spent in seconds (on unmount):', Math.floor(timeSpent / 1000));
+
+            const updatedArticleTime = parseInt(user.userInfo.userdata_articlestime, 10) + Math.floor(timeSpent / 1000);
+            const requestData = {
+                hash: API_HASH,
+                userdata_id: user.userInfo.userdata_id,
+                userdata_articlestime: updatedArticleTime
+            };
+
+            fetch('https://lafagency.com/meditation/admin/Api/updatearticlestimedata', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // console.log('Success:', data);
+                })
+                .catch(error => {
+                    console.error('Error updating article time:', error);
+                });
         };
-    }, [dispatch]);
+    }, [dispatch, user.userInfo.userdata_articlestime, user.userInfo.userdata_id]);
 
-    const handleAppStateChange = (nextAppState) => {
-        if (appState.current.match(/inactive|background/) && nextAppState === "active") {
-            startTimeRef.current = Date.now();
-        } else if (nextAppState.match(/inactive|background/)) {
-            const endTime = Date.now();
-            const timeSpent = endTime - startTimeRef.current;
-            dispatch(addScreenTime(Math.floor(timeSpent / 1000)));
-            console.log(Math.floor(timeSpent / 1000))
+    const handleAppStateChange = async (nextAppState) => {
+        try {
+            if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+                startTimeRef.current = Date.now();
+            } else if (nextAppState.match(/inactive|background/)) {
+                const endTime = Date.now();
+                const timeSpent = endTime - startTimeRef.current;
+                dispatch(addScreenTime(Math.floor(timeSpent / 1000)));
+                console.log('Time spent in seconds:', Math.floor(timeSpent / 1000));
+
+                const updatedArticleTime = parseInt(user.userInfo.userdata_articlestime, 10) + Math.floor(timeSpent / 1000);
+
+                console.log('Updated article time:', updatedArticleTime);
+
+                const requestData = {
+                    hash: API_HASH,
+                    userdata_id: user.userInfo.userdata_id,
+                    userdata_articlestime: updatedArticleTime
+                };
+
+                const response = await fetch('https://lafagency.com/meditation/admin/Api/updatearticlestimedata', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                // console.log('Success:', data);
+            }
+            appState.current = nextAppState;
+        } catch (error) {
+            console.error('Error updating article time:', error);
         }
-        appState.current = nextAppState;
     };
+    useEffect(() => {
+        let favoritesArray = [];
 
-    const handleToggleFavorite = () => {
-        if (isFavorited) {
-            dispatch(removeFavorite({ id: item.id, type: 'article' }));
-            setIsFavorited(false);
-        } else {
-            dispatch(addFavorite({ id: item.id, type: 'article' }));
+        try {
+            favoritesArray = JSON.parse(user.userInfo.userdata_favorites_article || '[]');
+        } catch (e) {
+            favoritesArray = [];
+        }
+
+        if (favoritesArray.includes(item.id.toString())) {
             setIsFavorited(true);
         }
-    };
+    }, [user.userInfo.userdata_favorites_article, item.id]);
 
+    const handleToggleFavorite = async () => {
+        try {
+            let jsonString = user.userInfo.userdata_favorites_article;
+
+            if (jsonString == null || jsonString === '') {
+                jsonString = '[]';
+            }
+
+            let favoritesArray = JSON.parse(jsonString);
+
+            const apiUrl = 'https://lafagency.com/meditation/admin/Api/updatefavoritesarticle';
+
+            let updatedFavorites;
+
+            if (isFavorited) {
+                favoritesArray = favoritesArray.filter(id => id !== item.id.toString());
+                updatedFavorites = favoritesArray;
+                dispatch(removeFavorite({ id: item.id, type: 'article' }));
+                setIsFavorited(false);
+            } else {
+                if (!favoritesArray.includes(item.id.toString())) {
+                    updatedFavorites = [...favoritesArray, item.id.toString()];
+                    favoritesArray.push(item.id.toString());
+                    dispatch(addFavorite({ id: item.id, type: 'article' }));
+                    setIsFavorited(true);
+                }
+            }
+
+            const userData = {
+                userdata_favorites_article: JSON.stringify(updatedFavorites),
+                hash: API_HASH,
+                userdata_id: user.userInfo.userdata_id,
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update favorites');
+            }
+
+            console.log('Favorites updated successfully');
+        } catch (error) {
+            console.error('Error updating favorites:', error);
+        }
+    };
     const handleBackPress = () => {
         navigation.goBack();
     };
 
-    const handleScroll = (event) => {
+    const handleScroll = async (event) => {
         const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
         const paddingToBottom = 20;
         const isScrollingToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
@@ -63,9 +175,37 @@ export default function ArticleDetail({ route, navigation }) {
         if (isScrollingToBottom && !hasCompletedArticle) {
             setHasCompletedArticle(true);
             dispatch(setCompletedArticle({ id: item.id, type: 'article' }));
+
+            try {
+                const updatedArticleCount = parseInt(user.userInfo.userdata_articles, 10) + 1;
+
+                const requestData = {
+                    hash: API_HASH,
+                    userdata_id: user.userInfo.userdata_id,
+                    userdata_articles: updatedArticleCount
+                };
+
+                const response = await fetch('https://lafagency.com/meditation/admin/Api/updatearticledata', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': `Bearer YOUR_API_HASH`
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                // console.log('Success:', data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
-        setIsScrolledToBottom(isScrollingToBottom);
+        // setIsScrolledToBottom(isScrollingToBottom);
     };
 
     return (
@@ -75,7 +215,7 @@ export default function ArticleDetail({ route, navigation }) {
                 bounces={true}
                 showsVerticalScrollIndicator={false}
                 onScroll={handleScroll}
-                scrollEventThrottle={16} 
+                scrollEventThrottle={16}
             >
                 <View style={{ height: '50%', width: '100%', position: 'absolute', }}>
                     <ImageBackground source={item.img} style={{ height: '100%', width: '100%', }}>

@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Button } from 'react-native'
 import React, { useState } from 'react'
 import styles from '../style';
-import { useData } from '../context/DataContext';
+import { useData } from '../context/DataContext2';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Audio } from 'expo-av';
 

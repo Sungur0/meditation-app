@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, ImageBackground, ScrollView, AppState } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ImageBackground, ScrollView, AppState, useWindowDimensions } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import styles from '../style';
@@ -7,10 +7,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addFavorite, removeFavorite, addScreenTime, setCompletedArticle } from '../redux/UserSlice';
 import FloatingPlayer from '../components/FloatingPlayer';
 import { API_HASH } from '../constant'
+import RenderHtml from 'react-native-render-html';
+import getImageUrl from '../components/getImageUrl';
 
 export default function ArticleDetail({ route, navigation }) {
     const { item } = route.params;
     const dispatch = useDispatch();
+    console.log(item)
     const user = useSelector((state) => state.user);
     const startTimeRef = useRef(null);
     const appState = useRef(AppState.currentState);
@@ -107,10 +110,10 @@ export default function ArticleDetail({ route, navigation }) {
             favoritesArray = [];
         }
 
-        if (favoritesArray.includes(item.id.toString())) {
+        if (favoritesArray.includes(item.articles_id)) {
             setIsFavorited(true);
         }
-    }, [user.userInfo.userdata_favorites_article, item.id]);
+    }, [user.userInfo.userdata_favorites_article, item.articles_id]);
 
     const handleToggleFavorite = async () => {
         try {
@@ -127,15 +130,15 @@ export default function ArticleDetail({ route, navigation }) {
             let updatedFavorites;
 
             if (isFavorited) {
-                favoritesArray = favoritesArray.filter(id => id !== item.id.toString());
+                favoritesArray = favoritesArray.filter(id => id !== item.articles_id);
                 updatedFavorites = favoritesArray;
-                dispatch(removeFavorite({ id: item.id, type: 'article' }));
+                dispatch(removeFavorite({ id: item.articles_id, type: 'article' }));
                 setIsFavorited(false);
             } else {
-                if (!favoritesArray.includes(item.id.toString())) {
-                    updatedFavorites = [...favoritesArray, item.id.toString()];
-                    favoritesArray.push(item.id.toString());
-                    dispatch(addFavorite({ id: item.id, type: 'article' }));
+                if (!favoritesArray.includes(item.articles_id)) {
+                    updatedFavorites = [...favoritesArray, item.articles_id];
+                    favoritesArray.push(item.articles_id);
+                    dispatch(addFavorite({ id: item.articles_id, type: 'article' }));
                     setIsFavorited(true);
                 }
             }
@@ -174,7 +177,7 @@ export default function ArticleDetail({ route, navigation }) {
 
         if (isScrollingToBottom && !hasCompletedArticle) {
             setHasCompletedArticle(true);
-            dispatch(setCompletedArticle({ id: item.id, type: 'article' }));
+            dispatch(setCompletedArticle({ id: item.articles_id, type: 'article' }));
 
             try {
                 const updatedArticleCount = parseInt(user.userInfo.userdata_articles, 10) + 1;
@@ -207,6 +210,38 @@ export default function ArticleDetail({ route, navigation }) {
 
         // setIsScrolledToBottom(isScrollingToBottom);
     };
+    const { width } = useWindowDimensions();
+    const img = getImageUrl(item.articles_image, 'articles', 0);
+    console.log(img);
+    const source = {
+        html: item.articles_desc,
+    };
+    const tagsStyles = {
+        p: {
+            fontFamily: 'Montserrat-Regular',
+            fontWeight: 300,
+            lineHeight: 25,
+            fontSize: 16
+        },
+        strong: {
+            fontFamily: 'Montserrat-Bold',
+        },
+        ol: {
+            fontFamily: 'Montserrat-Regular',
+            padding: 0,
+            paddingLeft: 15,
+        },
+        ul: {
+            padding: 0,
+            paddingLeft: 15,
+        },
+        li: {
+            marginTop: -17.5
+        },
+
+    };
+    const systemFonts = ['Montserrat-Regular', 'Montserrat-Bold','Montserrat-Medium'];
+
 
     return (
         <>
@@ -218,7 +253,7 @@ export default function ArticleDetail({ route, navigation }) {
                 scrollEventThrottle={16}
             >
                 <View style={{ height: '50%', width: '100%', position: 'absolute', }}>
-                    <ImageBackground source={item.img} style={{ height: '100%', width: '100%', }}>
+                    <ImageBackground source={{ uri: img }} style={{ height: '100%', width: '100%', }}>
                     </ImageBackground>
                     <LinearGradient
                         colors={['transparent', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)', 'rgba(255,255,255,1)',]}
@@ -237,10 +272,16 @@ export default function ArticleDetail({ route, navigation }) {
 
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 170, paddingBottom: 60 }}>
                     <View style={styles.articleDescHeader}>
-                        <Text style={styles.articleDescCardHeader}>{item.name}</Text>
+                        <Text style={styles.articleDescCardHeader}>{item.articles_title}</Text>
                     </View>
                     <View style={styles.articleDescCardContainer}>
-                        <Text style={styles.articleDescCardText}>{item.desc}</Text>
+                        {/* <Text style={styles.articleDescCardText}>{item.articles_desc}</Text> */}
+                        <RenderHtml
+                            tagsStyles={tagsStyles}
+                            contentWidth={width}
+                            source={source}
+                            systemFonts={systemFonts}
+                        />
                     </View>
                 </View>
             </ScrollView>

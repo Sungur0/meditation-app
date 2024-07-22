@@ -370,6 +370,7 @@ const styles = StyleSheet.create({
     articleTitle: {
         fontFamily: 'Montserrat-Medium',
         fontSize: 13,
+        textAlign:'center',
         color: '#000',
         paddingVertical: 5,
         marginHorizontal: 10,
@@ -377,7 +378,8 @@ const styles = StyleSheet.create({
     articleDescCardContainer: {
         backgroundColor: '#fff',
         marginHorizontal: 20,
-        borderRadius: 20
+        borderRadius: 20,
+        padding: 20,
     },
     articleDescHeader: {
         marginBottom: 25
@@ -569,6 +571,11 @@ const styles = StyleSheet.create({
         borderColor: 'green',
     },
 
+
+
+
 })
+
+  
 
 export default styles

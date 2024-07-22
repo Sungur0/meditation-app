@@ -1,15 +1,19 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, FlatList } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, TouchableOpacity, Image, useWindowDimensions } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import styles from '../style'
-import { useData } from '../context/DataContext';
 import FloatingPlayer from '../components/FloatingPlayer';
+import { API_HASH } from '../constant'
+import { useData } from '../context/DataContext1';
+import getImageUrl from '../components/getImageUrl';
+
 
 export default function MeditationArticles({ navigation }) {
-    const { data } = useData();
+    const { width } = useWindowDimensions();
+    // const topLocationArticles = data.articles.filter(article => article.topLocation === 1);
+    // console.log(articles)
 
-
-    const topLocationArticles = data.articles.filter(article => article.topLocation === 1);
-
+    const { articles } = useData();
+    console.log(articles)
 
     return (
         <>
@@ -19,7 +23,7 @@ export default function MeditationArticles({ navigation }) {
                 <View style={styles.meditationArticlesHeader}>
                     <Text style={styles.meditationHeaderText}>Meditaton Articles</Text>
                 </View>
-                <ScrollView horizontal style={styles.meditationArticlesCardContainer} showsHorizontalScrollIndicator={false}>
+                {/* <ScrollView horizontal style={styles.meditationArticlesCardContainer} showsHorizontalScrollIndicator={false}>
                     {topLocationArticles.map((product, index) => {
                         return (
                             <TouchableOpacity style={styles.categoryCardCon} key={product.id} onPress={() => navigation.navigate('ArticleDetail', { item: product })} activeOpacity={0.9}>
@@ -30,16 +34,19 @@ export default function MeditationArticles({ navigation }) {
                             </TouchableOpacity>
                         )
                     })}
-                </ScrollView>
+                </ScrollView> */}
                 <View style={styles.meditationSubArticlesHeader}>
                     <Text style={styles.meditationSubHeaderText}>More Articles</Text>
                 </View>
                 <View style={styles.verticalArticleContainer}>
-                    {data.articles.map((article, index) => {
+                    {articles.map((article, index) => {
+                        const img = getImageUrl(article.articles_image, 'articles', 0);
+
                         return (
-                            <TouchableOpacity style={styles.articleContainer} key={article.id} onPress={() => navigation.navigate('ArticleDetail', { item: article })} activeOpacity={0.9}>
-                                <Image source={article.img} style={styles.categoryImg}></Image>
-                                <Text style={styles.articleTitle}>{article.name}</Text>
+                            <TouchableOpacity style={styles.articleContainer} key={article.articles_id} onPress={() => navigation.navigate('ArticleDetail', { item: article })} activeOpacity={0.9}>
+                                <Image source={{ uri: img }}style={styles.categoryImg}></Image>
+                                <Text style={styles.articleTitle}>{article.articles_title}</Text>
+
                             </TouchableOpacity>
                         )
                     })}

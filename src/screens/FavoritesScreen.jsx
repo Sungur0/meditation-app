@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React from 'react'
 import styles from '../style'
 import { useSelector } from 'react-redux';
-import { useData } from '../context/DataContext';
+import { useData } from '../context/DataContext2';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingPlayer from '../components/FloatingPlayer';
 

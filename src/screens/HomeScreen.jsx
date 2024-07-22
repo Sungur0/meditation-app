@@ -2,10 +2,11 @@ import { Text, View, Image, ScrollView, TouchableOpacity, SafeAreaView, StatusBa
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../style';
-import { useData } from '../context/DataContext';
+import { useData } from '../context/DataContext2';
 // import DeviceInfo from 'react-native-device-info';
 import FloatingPlayer from '../components/FloatingPlayer';
 // import TrackPlayer from 'react-native-track-player';
+import RenderHtml from 'react-native-render-html';
 
 export default function HomeScreen({ navigation }) {
   // const uniqueId = DeviceInfo.getUniqueIdSync();

@@ -3,8 +3,12 @@ import React from 'react'
 import styles from '../style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import getImageUrl from '../components/getImageUrl';
+
 export default function MeditationProgram({ route, navigation }) {
   const { item } = route.params;
+
+  const img = getImageUrl(item.programs_image, 'programs', 1);
 
   return (
     <View style={{ flex: 1 }}>
@@ -12,7 +16,7 @@ export default function MeditationProgram({ route, navigation }) {
         <Icon name='close-outline' size={30} color='#fff' />
       </TouchableOpacity>
       <ImageBackground
-        source={item.fullImg}
+        source={{ uri: img }}
         style={styles.backgroundImage}
       >
         <LinearGradient
@@ -20,8 +24,8 @@ export default function MeditationProgram({ route, navigation }) {
           style={{ height: '70%', position: 'absolute', bottom: 0, zIndex: 1, left: 0, right: 0 }}
         ></LinearGradient>
         <View style={styles.programTextContainer}>
-          <Text style={styles.programTextHeader}>{item.name}</Text>
-          <Text style={styles.programText}>{item.desc}</Text>
+          <Text style={styles.programTextHeader}>{item.programs_title}</Text>
+          <Text style={styles.programText}>{item.programs_description}</Text>
         </View>
         <View style={styles.programBottomContainer}>
           <Text style={styles.programText} onPress={() => navigation.navigate('Meditation ')}>Change Program</Text>

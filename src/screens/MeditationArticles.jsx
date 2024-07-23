@@ -13,7 +13,7 @@ export default function MeditationArticles({ navigation }) {
     // console.log(articles)
 
     const { articles } = useData();
-    console.log(articles)
+
 
     return (
         <>
@@ -44,7 +44,7 @@ export default function MeditationArticles({ navigation }) {
 
                         return (
                             <TouchableOpacity style={styles.articleContainer} key={article.articles_id} onPress={() => navigation.navigate('ArticleDetail', { item: article })} activeOpacity={0.9}>
-                                <Image source={{ uri: img }}style={styles.categoryImg}></Image>
+                                <Image source={{ uri: img }} style={styles.categoryImg}></Image>
                                 <Text style={styles.articleTitle}>{article.articles_title}</Text>
 
                             </TouchableOpacity>

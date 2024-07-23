@@ -20,7 +20,7 @@ export default function ProgramList({ route, navigation }) {
     return (
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
             <View style={styles.programListHeader}>
-                <Text style={styles.meditationHeaderText}>{item.name}</Text>
+                <Text style={styles.meditationHeaderText}>{item.programs_title}</Text>
                 <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9}>
                     <Icon name='arrow-back-outline' size={24} color="rgba(0,0,0,1)" />
                 </TouchableOpacity>
